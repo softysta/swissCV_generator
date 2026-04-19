@@ -128,3 +128,9 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .bg-gradient-purple {
+    background: linear-gradient(180deg, rgba(195, 197, 215, 0.05) 0%, rgba(195, 197, 215, 0.1) 100%);
+  }
+}
