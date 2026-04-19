@@ -25,13 +25,13 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center px-4 py-6">
-      <div className="flex flex-col items-center w-full max-w-2xl">
+    <main className="min-h-svh bg-zinc-50 flex flex-col items-center justify-start px-4 pt-6 pb-6 sm:pt-12 sm:pb-10">
+      <div className="flex flex-col items-center w-full max-w-2xl md:pt-4 lg:pt-8">
         {/* Title */}
-        <h1 className="text-4xl font-bold text-zinc-900 mb-2">
+        <h1 className="text-3xl sm:text-4xl font-bold text-zinc-900 mb-2 text-center">
           Upload your CV
         </h1>
-        <p className="text-zinc-600 mb-12 text-center">
+        <p className="text-zinc-600 mb-8 sm:mb-10 md:mb-12 text-center max-w-xl">
           Upload the raw documents to begin the precision architectural process.
         </p>
 
@@ -41,11 +41,10 @@ export default function UploadPage() {
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          className={`w-full border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer transition-colors mb-6 ${
-            isDragActive
+          className={`w-full border-2 border-dashed rounded-2xl p-8 sm:p-10 md:p-12 flex flex-col items-center justify-center cursor-pointer transition-colors mb-6 ${isDragActive
               ? "border-blue-600 bg-blue-50"
               : "border-zinc-300 bg-white hover:border-zinc-400"
-          }`}
+            }`}
         >
           <CloudDownload className="w-12 h-12 text-zinc-400 mb-4" />
           <p className="text-lg font-semibold text-zinc-900 mb-1">
@@ -75,7 +74,7 @@ export default function UploadPage() {
         </div>
 
         {/* Sketch Mode */}
-        <div className="w-full bg-white border border-zinc-200 rounded-lg p-6 flex items-center justify-between hover:border-zinc-300 transition-colors">
+        <div className="w-full bg-white border border-zinc-200 rounded-lg p-5 sm:p-6 flex items-center justify-between hover:border-zinc-300 transition-colors">
           <div className="flex items-center gap-3">
             <ExternalLink className="w-6 h-6 text-zinc-600" />
             <div>
