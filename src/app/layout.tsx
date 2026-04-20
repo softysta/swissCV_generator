@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/app/_components/navbar";
-import { StepsIndicator } from "@/app/_components/StepsIndicator";
-import { CVProvider } from "@/store/CVContext";
+import { Navbar } from "@/app/(home)/_components/navbar";
+import { StepsIndicator } from "@/app/(home)/_components/StepsIndicator";
+import { CVProvider } from "@/lib/CVContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
