@@ -27,6 +27,7 @@ export type TEducation = {
 
 export type TPersonalInfo = {
   fullName: string;
+  role: string;
   email: string;
   phoneNumber: string;
   address: string;

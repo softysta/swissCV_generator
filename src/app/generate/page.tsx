@@ -199,6 +199,7 @@ function LogoIcon() {
 const DEMO_DATA: TCVContent = {
   personalInfo: {
     fullName: "Camilla Martine",
+    role: "Experte Comptable",
     email: "hello@reallygreatsite.com",
     phoneNumber: "+123-456-7890",
     address: "Any City",

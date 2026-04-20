@@ -1,6 +1,14 @@
 "use client";
 
 import { TCVTemplateProps } from "@/types/cvContent.tye";
+import React from "react";
+
+/**
+ * EXACT REPLICA TEMPLATE
+ * - Sidebar: Solid Navy (#0f1e5c) with white text and dividers.
+ * - Sections: Full-width Navy background bars for "EXPÉRIENCES PROFESSIONNELLES", etc.
+ * - Content: Bullet points (●) for titles within main sections.
+ */
 
 const NAVY = "#0f1e5c";
 
@@ -10,9 +18,8 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
     experiences,
     education,
     skills = [],
-    expertise = [],
     languages,
-    interests,
+    interests = [],
   } = data;
 
   return (
@@ -21,245 +28,161 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         display: "flex",
         width: 794,
         minHeight: 1123,
-        fontFamily: "'Helvetica Neue', Arial, sans-serif",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         background: "#ffffff",
       }}
     >
-      {/* ── Dark Sidebar ──────────────────────────────────────────── */}
+      {/* ── SIDEBAR ────────────────────────────────────────────── */}
       <aside
         style={{
-          width: 238,
+          width: 280,
           background: NAVY,
-          flexShrink: 0,
           color: "#ffffff",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
         }}
       >
-        {/* Photo */}
+        {/* Profile Image - Square/Slightly Portrait */}
         <div
           style={{
-            width: 238,
-            height: 196,
-            background: "#1a2e7a",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
+            width: "100%",
+            height: 240,
+            padding: "25px",
+            boxSizing: "border-box",
           }}
         >
-          {personalInfo.photoUrl ? (
-            <img
-              src={personalInfo.photoUrl}
-              alt={personalInfo.fullName}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            <PersonPlaceholderLight />
-          )}
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "#fff",
+              border: "4px solid #fff",
+              overflow: "hidden",
+            }}
+          >
+            {personalInfo.photoUrl ? (
+              <img
+                src={personalInfo.photoUrl}
+                alt={personalInfo.fullName}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <div style={{ background: "#ccc", height: "100%" }} />
+            )}
+          </div>
         </div>
 
-        <div style={{ padding: "18px 18px" }}>
+        <div style={{ padding: "0 25px 40px" }}>
           {/* Informations */}
-          <ModernSidebarSection title="Informations">
-            <ModernRow>Permis B</ModernRow>
-            <ModernRow>{personalInfo.phoneNumber}</ModernRow>
-            <ModernRow>{personalInfo.email}</ModernRow>
-            <ModernRow>{personalInfo.address}</ModernRow>
-          </ModernSidebarSection>
+          <SidebarSection title="INFORMATIONS">
+            <SidebarRow>Permis B</SidebarRow>
+            <SidebarRow>{personalInfo.phoneNumber}</SidebarRow>
+            <SidebarRow>{personalInfo.email}</SidebarRow>
+            <SidebarRow>{personalInfo.address}</SidebarRow>
+          </SidebarSection>
 
           {/* Compétences */}
           {skills.length > 0 && (
-            <ModernSidebarSection title="Compétences">
-              {skills.map((c, i) => (
-                <ModernRow key={i}>{c}</ModernRow>
+            <SidebarSection title="COMPÉTENCES">
+              {skills.map((skill, i) => (
+                <SidebarRow key={i}>{skill}</SidebarRow>
               ))}
-            </ModernSidebarSection>
+            </SidebarSection>
           )}
 
           {/* Langues */}
           {languages.length > 0 && (
-            <ModernSidebarSection title="Langues">
-              {languages.map((l, i) => (
-                <ModernRow key={i}>
-                  {l.name} ({l.proficiency})
-                </ModernRow>
+            <SidebarSection title="LANGUES">
+              {languages.map((lang, i) => (
+                <SidebarRow key={i}>
+                  {lang.name} ({lang.proficiency})
+                </SidebarRow>
               ))}
-            </ModernSidebarSection>
+            </SidebarSection>
           )}
 
           {/* Intérêts */}
           {interests.length > 0 && (
-            <ModernSidebarSection title="Intérêts">
+            <SidebarSection title="INTERÊTS">
               {interests.map((item, i) => (
-                <ModernRow key={i}>{item}</ModernRow>
+                <SidebarRow key={i}>{item}</SidebarRow>
               ))}
-            </ModernSidebarSection>
+            </SidebarSection>
           )}
         </div>
       </aside>
 
-      {/* ── Main Content ──────────────────────────────────────────── */}
-      <main style={{ flex: 1 }}>
-        {/* Header */}
-        <div
-          style={{
-            padding: "28px 28px 18px",
-            borderBottom: `3px solid ${NAVY}`,
-          }}
-        >
-          <h1
-            style={{
-              color: NAVY,
-              fontSize: 34,
-              fontWeight: 900,
-              lineHeight: 1.1,
-              margin: 0,
-            }}
-          >
-            {personalInfo.fullName}
-          </h1>
-          <p
-            style={{
-              color: NAVY,
-              fontSize: 11.5,
-              fontWeight: "bold",
-              letterSpacing: 3.5,
-              textTransform: "uppercase",
-              margin: "5px 0 12px",
-            }}
-          >
-            {personalInfo.summary?.split(" ").slice(0, 3).join(" ")}
+      {/* ── MAIN CONTENT ────────────────────────────────────────── */}
+      <main style={{ flex: 1, padding: "40px 30px" }}>
+        {/* Name and Professional Title */}
+        <header style={{ marginBottom: 25 }}>
+          <h1 style={nameStyle}>{personalInfo.fullName}</h1>
+          <p style={titleStyle}>
+            {personalInfo.role || "CHARGÉ DE COMMUNICATION"}
           </p>
           {personalInfo.summary && (
-            <p
-              style={{
-                fontSize: 10.5,
-                color: "#555",
-                lineHeight: 1.75,
-                margin: 0,
-              }}
-            >
-              {personalInfo.summary}
-            </p>
+            <p style={summaryStyle}>{personalInfo.summary}</p>
           )}
-        </div>
+        </header>
 
-        <div style={{ padding: "18px 28px" }}>
-          {/* Experience */}
-          {experiences.length > 0 && (
-            <section style={{ marginBottom: 20 }}>
-              <ModernSectionBar>Expériences Professionnelles</ModernSectionBar>
-              {experiences.map((exp, i) => (
-                <div
-                  key={i}
-                  style={{
-                    marginBottom: 14,
-                    paddingLeft: 10,
-                    borderLeft: `3px solid ${NAVY}`,
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: 11.5,
-                      fontWeight: "bold",
-                      color: NAVY,
-                      margin: 0,
-                    }}
-                  >
-                    ● {exp.position}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: 9.5,
-                      color: "#aaa",
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
-                      margin: "2px 0 4px",
-                    }}
-                  >
-                    {exp.startDate} – {exp.isCurrent ? "Actuel" : exp.endDate}
-                  </p>
-                  {exp.description.map((d, j) => (
-                    <p
-                      key={j}
-                      style={{
-                        fontSize: 9.5,
-                        color: "#555",
-                        lineHeight: 1.65,
-                        margin: 0,
-                      }}
-                    >
-                      {d}
-                    </p>
-                  ))}
+        {/* Experience Section */}
+        {experiences.length > 0 && (
+          <section style={{ marginBottom: 30 }}>
+            <SectionHeader>EXPÉRIENCES PROFESSIONNELLES</SectionHeader>
+            {experiences.map((exp, i) => (
+              <div key={i} style={{ marginBottom: 20 }}>
+                <div style={entryHeaderStyle}>
+                  <span style={bulletStyle}>●</span>
+                  <h3 style={entryTitleStyle}>
+                    {exp.position} - {exp.companyName}
+                  </h3>
                 </div>
-              ))}
-            </section>
-          )}
+                <p style={dateStyle}>
+                  {exp.startDate.toUpperCase()} -{" "}
+                  {exp.isCurrent
+                    ? "ACTUEL"
+                    : (exp.endDate ?? "PRÉSENT").toUpperCase()}
+                </p>
+                {exp.description.map((desc, j) => (
+                  <p key={j} style={descStyle}>
+                    {desc}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </section>
+        )}
 
-          {/* Expertise */}
-          {expertise.length > 0 && (
-            <section style={{ marginBottom: 20 }}>
-              <ModernSectionBar>Expertise</ModernSectionBar>
-              {expertise.map((item, i) => (
-                <div
-                  key={i}
-                  style={{
-                    marginBottom: 8,
-                    paddingLeft: 10,
-                    borderLeft: `3px solid ${NAVY}`,
-                    fontSize: 9.5,
-                    color: "#555",
-                    lineHeight: 1.65,
-                  }}
-                >
-                  {item}
+        {/* Education Section */}
+        {education.length > 0 && (
+          <section>
+            <SectionHeader>FORMATIONS</SectionHeader>
+            {education.map((edu, i) => (
+              <div key={i} style={{ marginBottom: 20 }}>
+                <div style={entryHeaderStyle}>
+                  <span style={bulletStyle}>●</span>
+                  <h3 style={entryTitleStyle}>{edu.degree}</h3>
                 </div>
-              ))}
-            </section>
-          )}
-
-          {/* Education */}
-          {education.length > 0 && (
-            <section>
-              <ModernSectionBar>Formations</ModernSectionBar>
-              {education.map((edu, i) => (
-                <div
-                  key={i}
-                  style={{
-                    marginBottom: 12,
-                    paddingLeft: 10,
-                    borderLeft: `3px solid ${NAVY}`,
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: 11.5,
-                      fontWeight: "bold",
-                      color: NAVY,
-                      margin: 0,
-                    }}
-                  >
-                    ● {edu.degree}
-                  </p>
-                  <p style={{ fontSize: 9.5, color: "#aaa", margin: "2px 0" }}>
-                    {edu.startDate} – {edu.isCurrent ? "Present" : edu.endDate}
-                  </p>
-                  <p style={{ fontSize: 9.5, color: "#555", margin: 0 }}>
-                    {edu.institutionName}
-                  </p>
-                </div>
-              ))}
-            </section>
-          )}
-        </div>
+                <p style={dateStyle}>
+                  {edu.startDate} - {edu.endDate}
+                </p>
+                <p style={descStyle}>
+                  {edu.institutionName} -{" "}
+                  {personalInfo.address?.split(",").pop()?.trim() || "Any City"}
+                </p>
+              </div>
+            ))}
+          </section>
+        )}
       </main>
     </div>
   );
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
+// ── COMPONENTS ─────────────────────────────────────────────────────────────
 
-function ModernSidebarSection({
+function SidebarSection({
   title,
   children,
 }: {
@@ -267,25 +190,13 @@ function ModernSidebarSection({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ marginBottom: 16 }}>
-      <p
-        style={{
-          fontSize: 10,
-          fontWeight: "bold",
-          letterSpacing: 2.5,
-          textTransform: "uppercase",
-          color: "#ffffff",
-          marginBottom: 8,
-        }}
-      >
-        {title}
-      </p>
+    <div style={{ marginBottom: 25 }}>
+      <h2 style={sidebarTitleStyle}>{title}</h2>
       <div
         style={{
-          width: "100%",
-          height: 0.5,
-          background: "rgba(255,255,255,0.2)",
-          marginBottom: 10,
+          height: 1,
+          background: "rgba(255,255,255,0.4)",
+          margin: "8px 0 12px",
         }}
       />
       {children}
@@ -293,45 +204,94 @@ function ModernSidebarSection({
   );
 }
 
-function ModernRow({ children }: { children: React.ReactNode }) {
+function SidebarRow({ children }: { children: React.ReactNode }) {
   return (
-    <p
-      style={{
-        fontSize: 9.5,
-        color: "rgba(255,255,255,0.82)",
-        lineHeight: 1.95,
-        margin: 0,
-      }}
-    >
-      {children}
-    </p>
+    <p style={{ fontSize: 11.5, margin: "6px 0", opacity: 0.9 }}>{children}</p>
   );
 }
 
-function ModernSectionBar({ children }: { children: React.ReactNode }) {
+function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        background: "#0f1e5c",
-        color: "#ffffff",
-        fontSize: 10,
-        fontWeight: "bold",
-        letterSpacing: 2,
-        textTransform: "uppercase",
-        padding: "6px 12px",
-        marginBottom: 13,
-      }}
-    >
-      {children}
+    <div style={{ background: NAVY, padding: "8px 15px", marginBottom: 18 }}>
+      <h2
+        style={{
+          color: "#fff",
+          fontSize: 14,
+          fontWeight: "bold",
+          letterSpacing: 1.5,
+          margin: 0,
+        }}
+      >
+        {children}
+      </h2>
     </div>
   );
 }
 
-function PersonPlaceholderLight() {
-  return (
-    <svg width="80" height="90" viewBox="0 0 80 90" fill="none">
-      <circle cx="40" cy="30" r="20" fill="rgba(255,255,255,0.25)" />
-      <ellipse cx="40" cy="82" rx="32" ry="22" fill="rgba(255,255,255,0.25)" />
-    </svg>
-  );
-}
+// ── STYLES ─────────────────────────────────────────────────────────────────
+
+const nameStyle: React.CSSProperties = {
+  fontSize: 42,
+  fontWeight: 900,
+  color: NAVY,
+  margin: "0 0 5px 0",
+};
+
+const titleStyle: React.CSSProperties = {
+  fontSize: 18,
+  color: NAVY,
+  letterSpacing: 1,
+  fontWeight: "bold",
+  textTransform: "uppercase",
+  margin: "0 0 15px 0",
+};
+
+const summaryStyle: React.CSSProperties = {
+  fontSize: 10.5,
+  lineHeight: 1.6,
+  color: "#333",
+  margin: 0,
+};
+
+const sidebarTitleStyle: React.CSSProperties = {
+  fontSize: 14,
+  fontWeight: "bold",
+  letterSpacing: 2,
+  textTransform: "uppercase",
+  margin: 0,
+};
+
+const entryHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  marginBottom: 4,
+};
+
+const bulletStyle: React.CSSProperties = {
+  color: NAVY,
+  fontSize: 16,
+  marginRight: 10,
+};
+
+const entryTitleStyle: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: "bold",
+  color: "#000",
+  margin: 0,
+};
+
+const dateStyle: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: "bold",
+  color: "#666",
+  paddingLeft: 22,
+  marginBottom: 6,
+};
+
+const descStyle: React.CSSProperties = {
+  fontSize: 11,
+  lineHeight: 1.5,
+  color: "#444",
+  paddingLeft: 22,
+  marginBottom: 3,
+};
