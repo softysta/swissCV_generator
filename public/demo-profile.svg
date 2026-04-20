@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#DCE8FF"/>
+      <stop offset="1" stop-color="#F6F8FF"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#334155"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="400" cy="370" r="160" fill="#F6D3BD"/>
+  <path d="M250 290C270 210 330 170 400 170C470 170 530 210 550 290V330H250V290Z" fill="#2C2A39"/>
+  <rect x="315" y="500" width="170" height="90" rx="40" fill="#F1C7AC"/>
+  <path d="M130 980C150 760 270 650 400 650C530 650 650 760 670 980H130Z" fill="url(#shirt)"/>
+
+  <ellipse cx="340" cy="360" rx="18" ry="12" fill="#2A1F1A"/>
+  <ellipse cx="460" cy="360" rx="18" ry="12" fill="#2A1F1A"/>
+  <path d="M365 435C385 455 415 455 435 435" stroke="#A0523B" stroke-width="10" stroke-linecap="round"/>
+  <path d="M300 315C330 290 355 290 380 315" stroke="#2C2A39" stroke-width="12" stroke-linecap="round"/>
+  <path d="M420 315C445 290 470 290 500 315" stroke="#2C2A39" stroke-width="12" stroke-linecap="round"/>
+
+  <circle cx="120" cy="160" r="90" fill="#FFFFFF" fill-opacity="0.35"/>
+  <circle cx="710" cy="250" r="120" fill="#FFFFFF" fill-opacity="0.25"/>
+  <circle cx="680" cy="860" r="110" fill="#FFFFFF" fill-opacity="0.22"/>
+</svg>
