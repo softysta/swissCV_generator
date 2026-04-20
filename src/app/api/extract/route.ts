@@ -46,11 +46,32 @@ export async function POST(request: NextRequest) {
     }
 
     let extractedData;
+    let lastError: Error | null = null;
 
     if (geminiKey) {
-      extractedData = await extractWithGemini(base64, file.type, geminiKey);
+      try {
+        extractedData = await extractWithGemini(base64, file.type, geminiKey);
+      } catch (error) {
+        console.warn("Gemini extraction failed, trying Claude...", error);
+        lastError = error as Error;
+        if (claudeKey) {
+          try {
+            extractedData = await extractWithClaude(base64, file.type, claudeKey);
+          } catch (claudeError) {
+            console.error("Both Gemini and Claude failed", claudeError);
+            throw claudeError;
+          }
+        } else {
+          throw error;
+        }
+      }
     } else if (claudeKey) {
-      extractedData = await extractWithClaude(base64, file.type, claudeKey);
+      try {
+        extractedData = await extractWithClaude(base64, file.type, claudeKey);
+      } catch (error) {
+        console.error("Claude extraction failed", error);
+        throw error;
+      }
     } else {
       throw new Error("No API key available");
     }
@@ -71,7 +92,7 @@ async function extractWithGemini(
   apiKey: string,
 ) {
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
     {
       method: "POST",
       headers: {
