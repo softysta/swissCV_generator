@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, FormProvider } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import { useCV } from "@/lib/CVContext";
+import { useCVContext } from "@/store/CVContext";
+import { TCVContent } from "@/types/cvContent.tye";
 import { FormInput } from "./_components/FormInput";
 import { FormTextarea } from "./_components/FormTextarea";
 import { FormImageUpload } from "./_components/FormImageUpload";
@@ -21,7 +23,10 @@ interface ReviewFormData {
   phone: string;
   address: string;
   summary: string;
-  languages: Array<{ name: string; proficiency: "Native" | "Fluent" | "Intermediate" | "Basic" }>;
+  languages: Array<{
+    name: string;
+    proficiency: "Native" | "Fluent" | "Intermediate" | "Basic";
+  }>;
   skills: string[];
   experiences: Array<{
     id: string;
@@ -41,7 +46,8 @@ interface ReviewFormData {
 }
 
 export default function ReviewPage() {
-  const { cvData, setCVData } = useCV();
+  const { cvData, setCVData } = useCVContext();
+  const router = useRouter();
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitializedRef = useRef(false);
 
@@ -65,47 +71,76 @@ export default function ReviewPage() {
   const { watch, reset } = methods;
   const formData = watch();
 
+  // Transform and navigate to generate page
+  const handleProceedToGenerate = () => {
+    const tcvContent: TCVContent = {
+      personalInfo: {
+        fullName: formData.fullName || "",
+        role: "", // Can be extracted or left empty
+        email: formData.email || "",
+        phoneNumber: formData.phone || "",
+        address: formData.address || "",
+        summary: formData.summary || "",
+        photoUrl: formData.profileImage || undefined,
+      },
+      experiences: formData.experiences.map((exp) => ({
+        companyName: exp.company,
+        position: exp.title,
+        startDate: exp.startDate,
+        endDate: exp.endDate || undefined,
+        isCurrent: !exp.endDate || exp.endDate.trim() === "",
+        description: exp.description
+          .split("\n")
+          .filter((line) => line.trim().length > 0),
+      })),
+      education: formData.educations.map((edu) => ({
+        institutionName: edu.school,
+        degree: edu.degree,
+        majorSubject: edu.field || undefined,
+        startDate: edu.graduationDate,
+        endDate: undefined,
+        isCurrent: false,
+      })),
+      skills: formData.skills,
+      languages: formData.languages,
+      interests: [],
+    };
+
+    setCVData(tcvContent);
+    router.push("/generate");
+  };
+
   // Update form with extracted data when cvData is available
   useEffect(() => {
     if (!cvData) return;
 
-    // Convert languages to proper format with proficiency
-    const languages = Array.isArray(cvData.languages)
-      ? cvData.languages.map((lang: any) =>
-          typeof lang === "string"
-            ? { name: lang, proficiency: "Fluent" as const }
-            : { name: lang.name || "", proficiency: lang.proficiency || "Fluent" }
-        )
-      : [];
-
     const formValues: ReviewFormData = {
-      profileImage: cvData.profileImage ?? null,
-      fullName: cvData.personalInfo?.name ?? "",
+      profileImage: cvData.personalInfo?.photoUrl ?? null,
+      fullName: cvData.personalInfo?.fullName ?? "",
       email: cvData.personalInfo?.email ?? "",
-      phone: cvData.personalInfo?.phone ?? "",
-      address: cvData.personalInfo?.location ?? "",
-      summary: cvData.summary ?? "",
-      languages,
-      skills: Array.isArray(cvData.skills) ? cvData.skills : [],
-      experiences: Array.isArray(cvData.experience)
-        ? cvData.experience.map((exp, idx) => ({
-            id: `exp-${idx}`,
-            title: exp.position ?? "",
-            company: exp.company ?? "",
-            startDate: exp.startDate ?? "",
-            endDate: exp.endDate ?? "",
-            description: exp.description ?? "",
-          }))
-        : [],
-      educations: Array.isArray(cvData.education)
-        ? cvData.education.map((edu, idx) => ({
-            id: `edu-${idx}`,
-            school: edu.school ?? "",
-            degree: edu.degree ?? "",
-            field: edu.field ?? "",
-            graduationDate: edu.graduationDate ?? "",
-          }))
-        : [],
+      phone: cvData.personalInfo?.phoneNumber ?? "",
+      address: cvData.personalInfo?.address ?? "",
+      summary: cvData.personalInfo?.summary ?? "",
+      languages: (cvData.languages ?? []).map((lang) => ({
+        name: lang.name,
+        proficiency: (lang.proficiency as "Native" | "Fluent" | "Intermediate" | "Basic") || "Fluent",
+      })),
+      skills: cvData.skills ?? [],
+      experiences: (cvData.experiences ?? []).map((exp, idx) => ({
+        id: `exp-${idx}`,
+        title: exp.position ?? "",
+        company: exp.companyName ?? "",
+        startDate: exp.startDate ?? "",
+        endDate: exp.endDate ?? "",
+        description: (exp.description ?? []).join("\n"),
+      })),
+      educations: (cvData.education ?? []).map((edu, idx) => ({
+        id: `edu-${idx}`,
+        school: edu.institutionName ?? "",
+        degree: edu.degree ?? "",
+        field: edu.majorSubject ?? "",
+        graduationDate: edu.endDate ?? edu.startDate ?? "",
+      })),
     };
 
     reset(formValues);
@@ -125,33 +160,40 @@ export default function ReviewPage() {
 
     // Set new timeout for syncing
     syncTimeoutRef.current = setTimeout(() => {
-      if (cvData && formData) {
-        setCVData({
-          ...cvData,
-          profileImage: formData.profileImage,
+      if (formData) {
+        const tcvContent: TCVContent = {
           personalInfo: {
-            name: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            location: formData.address,
+            fullName: formData.fullName || "",
+            role: "",
+            email: formData.email || "",
+            phoneNumber: formData.phone || "",
+            address: formData.address || "",
+            summary: formData.summary || "",
+            photoUrl: formData.profileImage || undefined,
           },
-          summary: formData.summary,
-          skills: formData.skills,
-          languages: formData.languages,
-          experience: formData.experiences.map((exp) => ({
-            company: exp.company,
+          experiences: formData.experiences.map((exp) => ({
+            companyName: exp.company,
             position: exp.title,
             startDate: exp.startDate,
-            endDate: exp.endDate,
-            description: exp.description,
+            endDate: exp.endDate || undefined,
+            isCurrent: !exp.endDate || exp.endDate.trim() === "",
+            description: exp.description
+              .split("\n")
+              .filter((line) => line.trim().length > 0),
           })),
           education: formData.educations.map((edu) => ({
-            school: edu.school,
+            institutionName: edu.school,
             degree: edu.degree,
-            field: edu.field,
-            graduationDate: edu.graduationDate,
+            majorSubject: edu.field || undefined,
+            startDate: edu.graduationDate,
+            endDate: undefined,
+            isCurrent: false,
           })),
-        });
+          skills: formData.skills,
+          languages: formData.languages,
+          interests: [],
+        };
+        setCVData(tcvContent);
       }
     }, 500);
 
@@ -160,7 +202,7 @@ export default function ReviewPage() {
         clearTimeout(syncTimeoutRef.current);
       }
     };
-  }, [formData, cvData, setCVData]);
+  }, [formData, setCVData]);
 
   return (
     <main className="min-h-screen bg-linear-to-b from-zinc-50 to-zinc-100 py-8 px-4">
@@ -271,14 +313,13 @@ export default function ReviewPage() {
               </Button>
             </Link>
 
-            <Link href="/generate">
-              <Button
-                type="button"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8"
-              >
-                Continue to template selection →
-              </Button>
-            </Link>
+            <Button
+              type="button"
+              onClick={handleProceedToGenerate}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+            >
+              Continue to template selection →
+            </Button>
           </div>
         </form>
       </FormProvider>
