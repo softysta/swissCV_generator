@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/app/(home)/_components/navbar";
 import { StepsIndicator } from "@/app/(home)/_components/StepsIndicator";
 import { CVProvider } from "@/lib/CVContext";
+import { CVProvider as StoreCVProvider } from "@/store/CVContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +22,11 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <body className="min-h-screen w-full">
         <CVProvider>
-          <Navbar />
-          <StepsIndicator />
-          <div className="min-h-[calc(100vh-120px)]">{children}</div>
+          <StoreCVProvider>
+            <Navbar />
+            <StepsIndicator />
+            <div className="min-h-[calc(100vh-120px)]">{children}</div>
+          </StoreCVProvider>
         </CVProvider>
       </body>
     </html>

@@ -8,7 +8,6 @@ import TemplateCard from "@/components/cv/TemplateCard";
 import DownloadPanel from "@/components/cv/DownloadPanel";
 import { TCVContent, TTemplateId } from "@/types/cvContent.tye";
 import { exportCVAsPDF } from "@/utils/exportPDF";
-import photo from "../../../public/christopher-campbell-rDEOVtE7vOs-unsplash.jpg";
 
 // ─── Template registry ────────────────────────────────────────────────────────
 
@@ -204,7 +203,7 @@ const DEMO_DATA: TCVContent = {
     phoneNumber: "+123-456-7890",
     address: "Any City",
     website: "www.reallygreatsite.com",
-    photoUrl: photo.src,
+    photoUrl: "/christopher-campbell-rDEOVtE7vOs-unsplash.jpg",
     summary:
       "Comptable avec plus de 15 ans d'expérience, spécialisée dans l'analyse des finances, la gestion des impôts et la planification budgétaire. J'aide les entreprises à mieux gérer leur argent et à améliorer leur rentabilité tout en limitant les risques.",
   },
