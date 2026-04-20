@@ -8,6 +8,7 @@ export interface ExtractionStep {
 }
 
 interface CVData {
+  profileImage?: string | null;
   personalInfo?: {
     name: string;
     email: string;
@@ -29,7 +30,10 @@ interface CVData {
     graduationDate: string;
   }>;
   skills?: string[];
-  languages?: string[];
+  languages?: Array<{
+    name: string;
+    proficiency: "Native" | "Fluent" | "Intermediate" | "Basic";
+  }>;
   certifications?: Array<{
     name: string;
     issuer: string;
