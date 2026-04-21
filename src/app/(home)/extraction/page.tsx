@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCV } from "@/lib/CVContext";
+import { useCVContext } from "@/store/CVContext";
 import { ExtractionStep } from "@/lib/CVContext";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
@@ -11,13 +12,12 @@ export default function ExtractionPage() {
   const {
     file,
     setFile,
-    cvData,
-    setCVData,
     extractionSteps,
     setExtractionSteps,
     isExtracting,
     setIsExtracting,
   } = useCV();
+  const { setCVData: setStoreCVData } = useCVContext();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -105,7 +105,8 @@ export default function ExtractionPage() {
           ),
         );
 
-        setCVData(data);
+        // Save extracted data to store context for review page
+        setStoreCVData(data);
         setIsExtracting(false);
 
         // Redirect to review page after completion
@@ -118,7 +119,7 @@ export default function ExtractionPage() {
     };
 
     extractCV();
-  }, [file, router, setCVData, setExtractionSteps, setIsExtracting]);
+  }, [file, router, setStoreCVData, setExtractionSteps, setIsExtracting]);
 
   return (
     <main className="min-h-svh bg-zinc-50 flex flex-col items-center justify-center px-4 py-12">
