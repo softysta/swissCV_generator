@@ -60,7 +60,19 @@ export async function POST(request: NextRequest) {
         claudeModel,
       );
       console.log("Claude extraction successful");
-      extractedData = transformClaudeResponseToTCVContent(rawData);
+      
+      // Try to extract image from PDF if available
+      let extractedImage: string | undefined;
+      if (file.type === "application/pdf") {
+        try {
+          extractedImage = await extractImageFromPDF(buffer);
+          console.log("Image extraction attempted");
+        } catch (imgError) {
+          console.warn("Could not extract image from PDF:", imgError);
+        }
+      }
+      
+      extractedData = transformClaudeResponseToTCVContent(rawData, extractedImage);
       console.log("Data transformation successful");
     } catch (error) {
       console.error("Claude extraction failed", error);
@@ -225,6 +237,55 @@ function shouldTryNextClaudeModel(errorMessage: string): boolean {
   );
 }
 
+// Extract first image from PDF buffer
+async function extractImageFromPDF(buffer: ArrayBuffer): Promise<string | undefined> {
+  try {
+    // Look for common image signatures in PDF
+    // JPEG: FFD8FF, PNG: 89504E47, GIF: 474946
+    const uint8Array = new Uint8Array(buffer);
+    
+    // Search for JPEG signature (FFD8FF)
+    for (let i = 0; i < uint8Array.length - 10; i++) {
+      if (uint8Array[i] === 0xFF && uint8Array[i + 1] === 0xD8 && uint8Array[i + 2] === 0xFF) {
+        // Found JPEG start, now find end (FFD9)
+        for (let j = i + 3; j < uint8Array.length - 1; j++) {
+          if (uint8Array[j] === 0xFF && uint8Array[j + 1] === 0xD9) {
+            // Found JPEG end
+            const jpegData = uint8Array.slice(i, j + 2);
+            const base64 = 'data:image/jpeg;base64,' + Buffer.from(jpegData).toString('base64');
+            console.log('Extracted JPEG image from PDF');
+            return base64;
+          }
+        }
+      }
+    }
+    
+    // Search for PNG signature (89504E47)
+    for (let i = 0; i < uint8Array.length - 8; i++) {
+      if (uint8Array[i] === 0x89 && uint8Array[i + 1] === 0x50 && 
+          uint8Array[i + 2] === 0x4E && uint8Array[i + 3] === 0x47) {
+        // Found PNG start, look for IEND chunk (49454E44)
+        for (let j = i + 8; j < uint8Array.length - 4; j++) {
+          if (uint8Array[j] === 0x49 && uint8Array[j + 1] === 0x45 && 
+              uint8Array[j + 2] === 0x4E && uint8Array[j + 3] === 0x44) {
+            // Found PNG end, including IEND
+            const pngData = uint8Array.slice(i, j + 8);
+            const base64 = 'data:image/png;base64,' + Buffer.from(pngData).toString('base64');
+            console.log('Extracted PNG image from PDF');
+            return base64;
+          }
+        }
+      }
+    }
+    
+    console.log('No recognizable images found in PDF');
+    return undefined;
+  } catch (error) {
+    console.error('Error extracting image from PDF:', error);
+    return undefined;
+  }
+}
+
 function parseExtractedJsonFromText(
   content: string | undefined,
   provider: string,
@@ -246,7 +307,7 @@ function parseExtractedJsonFromText(
 }
 
 // Transform Claude's raw extraction format to TCVContent format
-function transformClaudeResponseToTCVContent(rawData: unknown): unknown {
+function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: string): unknown {
   const data = rawData as Record<string, unknown>;
 
   const personalInfo = data.personalInfo as Record<string, unknown>;
@@ -264,7 +325,7 @@ function transformClaudeResponseToTCVContent(rawData: unknown): unknown {
       address: personalInfo?.location || "",
       website: personalInfo?.website || "",
       summary: data.summary || "",
-      photoUrl: undefined, // User can upload later
+      photoUrl: extractedImage || undefined,
     },
     experiences: experience.map((exp: Record<string, unknown>) => ({
       companyName: exp.company || "",
