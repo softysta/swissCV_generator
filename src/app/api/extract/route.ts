@@ -142,9 +142,11 @@ async function extractWithClaude(
               {
                 "personalInfo": {
                   "name": "string",
+                  "jobTitle": "string (current job title if available)",
                   "email": "string",
                   "phone": "string",
-                  "location": "string"
+                  "location": "string",
+                  "website": "string (portfolio or website URL if available)"
                 },
                 "summary": "string",
                 "experience": [
@@ -256,10 +258,11 @@ function transformClaudeResponseToTCVContent(rawData: unknown): unknown {
   return {
     personalInfo: {
       fullName: personalInfo?.name || "",
-      role: "", // Not provided by Claude, can be left empty
+      role: personalInfo?.jobTitle || "",
       email: personalInfo?.email || "",
       phoneNumber: personalInfo?.phone || "",
       address: personalInfo?.location || "",
+      website: personalInfo?.website || "",
       summary: data.summary || "",
       photoUrl: undefined, // User can upload later
     },

@@ -31,6 +31,14 @@ export default function ExtractionPage() {
         setIsExtracting(true);
         setError(null);
 
+        // Reset all extraction steps to waiting status
+        setExtractionSteps([
+          { name: "Reading CV content", status: "waiting" },
+          { name: "Extracting personal information", status: "waiting" },
+          { name: "Rewriting in Swiss professional format", status: "waiting" },
+          { name: "Smart-trimming content", status: "waiting" },
+        ]);
+
         // Step 1: Reading CV content
         setExtractionSteps((prev: ExtractionStep[]) =>
           prev.map((step, i) =>
