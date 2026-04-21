@@ -22,12 +22,11 @@ export function FormSelectLanguage({
   name,
   label,
 }: FormSelectLanguageProps) {
-  const { control, watch } = useFormContext();
-  const { append, remove } = useFieldArray({
+  const { control } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
     control,
     name: name as any,
   });
-  const languages = watch(name) || [];
   const [newLanguage, setNewLanguage] = useState("");
   const [selectedProficiency, setSelectedProficiency] = useState<"Native" | "Fluent" | "Intermediate" | "Basic">("Fluent");
 
@@ -39,8 +38,8 @@ export function FormSelectLanguage({
     }
   };
 
-  const removeLanguage = (index: number) => {
-    remove(index);
+  const handleRemoveLanguage = (indexToRemove: number) => {
+    remove(indexToRemove);
   };
 
   return (
@@ -53,22 +52,16 @@ export function FormSelectLanguage({
 
       {/* Display Languages */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {languages.length === 0 ? (
+        {fields.length === 0 ? (
           <p className="text-sm text-zinc-500">No languages added</p>
         ) : (
-          languages.map((lang: Language, index: number) => (
-            <Badge
-              key={index}
-              className="bg-blue-100 text-blue-700 border-0 px-3 py-1.5 flex items-center gap-2 cursor-pointer hover:bg-blue-200"
-            >
-              <span>
-                {lang.name} <span className="text-xs opacity-75">({lang.proficiency})</span>
-              </span>
-              <X
-                className="w-3 h-3 cursor-pointer"
-                onClick={() => removeLanguage(index)}
-              />
-            </Badge>
+          fields.map((field, idx) => (
+            <LanguageBadge
+              key={field.id}
+              name={name}
+              languageIndex={idx}
+              onRemove={handleRemoveLanguage}
+            />
           ))
         )}
       </div>
@@ -110,5 +103,32 @@ export function FormSelectLanguage({
         </select>
       </div>
     </div>
+  );
+}
+
+function LanguageBadge({ name, languageIndex, onRemove }: { name: string; languageIndex: number; onRemove: (idx: number) => void }) {
+  const { watch } = useFormContext();
+  const langName = watch(`${name}.${languageIndex}.name`);
+  const langProficiency = watch(`${name}.${languageIndex}.proficiency`);
+
+  return (
+    <Badge
+      className="bg-blue-100 text-blue-700 border-0 px-3 py-1.5 flex items-center gap-2"
+    >
+      <span>
+        {langName} <span className="text-xs opacity-75">({langProficiency})</span>
+      </span>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onRemove(languageIndex);
+        }}
+        className="ml-1 hover:opacity-70 transition-opacity flex items-center justify-center"
+      >
+        <X className="w-3 h-3" />
+      </button>
+    </Badge>
   );
 }
