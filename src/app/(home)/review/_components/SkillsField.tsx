@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext, useController } from "react-hook-form";
 
 interface SkillsFieldProps {
   name: string;
@@ -12,12 +12,11 @@ interface SkillsFieldProps {
 }
 
 export function SkillsField({ name, label }: SkillsFieldProps) {
-  const { control, watch } = useFormContext();
+  const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: name as any,
   });
-  const skills = watch(name) || [];
   const [newSkill, setNewSkill] = useState("");
 
   const addSkill = () => {
@@ -27,8 +26,8 @@ export function SkillsField({ name, label }: SkillsFieldProps) {
     }
   };
 
-  const removeSkill = (index: number) => {
-    remove(index);
+  const handleRemoveSkill = (indexToRemove: number) => {
+    remove(indexToRemove);
   };
 
   return (
@@ -40,20 +39,16 @@ export function SkillsField({ name, label }: SkillsFieldProps) {
       )}
 
       <div className="flex flex-wrap gap-2 mb-4">
-        {skills.length === 0 ? (
+        {fields.length === 0 ? (
           <p className="text-sm text-zinc-500">No skills added</p>
         ) : (
-          skills.map((skill: string, index: number) => (
-            <Badge
-              key={index}
-              className="bg-blue-100 text-blue-700 border-0 px-3 py-1 flex items-center gap-2 cursor-pointer hover:bg-blue-200"
-            >
-              {skill}
-              <X
-                className="w-3 h-3 cursor-pointer"
-                onClick={() => removeSkill(index)}
-              />
-            </Badge>
+          fields.map((field, idx) => (
+            <SkillBadge
+              key={field.id}
+              name={`${name}.${idx}`}
+              skillIndex={idx}
+              onRemove={handleRemoveSkill}
+            />
           ))
         )}
       </div>
@@ -76,5 +71,29 @@ export function SkillsField({ name, label }: SkillsFieldProps) {
         </Button>
       </div>
     </div>
+  );
+}
+
+function SkillBadge({ name, skillIndex, onRemove }: { name: string; skillIndex: number; onRemove: (idx: number) => void }) {
+  const { watch } = useFormContext();
+  const skill = watch(name);
+
+  return (
+    <Badge
+      className="bg-blue-100 text-blue-700 border-0 px-3 py-1 flex items-center gap-2"
+    >
+      {skill || ""}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onRemove(skillIndex);
+        }}
+        className="ml-1 hover:opacity-70 transition-opacity flex items-center justify-center"
+      >
+        <X className="w-3 h-3" />
+      </button>
+    </Badge>
   );
 }
