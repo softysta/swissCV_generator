@@ -160,7 +160,7 @@ export default function UploadPage() {
 
         {/* Sketch Mode */}
         <Link
-          href="/generate"
+          href="/review"
           className="w-full bg-white border border-zinc-200 rounded-lg p-5 sm:p-6 flex items-center justify-between hover:border-zinc-300 transition-colors"
         >
           <div className="flex items-center gap-3">
