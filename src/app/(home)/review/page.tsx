@@ -22,6 +22,8 @@ interface ReviewFormData {
   email: string;
   phone: string;
   address: string;
+  jobTitle: string;
+  website: string;
   summary: string;
   languages: Array<{
     name: string;
@@ -60,6 +62,8 @@ export default function ReviewPage() {
       email: "",
       phone: "",
       address: "",
+      jobTitle: "",
+      website: "",
       summary: "",
       languages: [],
       skills: [],
@@ -76,10 +80,11 @@ export default function ReviewPage() {
     const tcvContent: TCVContent = {
       personalInfo: {
         fullName: formData.fullName || "",
-        role: "", // Can be extracted or left empty
+        role: formData.jobTitle || "",
         email: formData.email || "",
         phoneNumber: formData.phone || "",
         address: formData.address || "",
+        website: formData.website || "",
         summary: formData.summary || "",
         photoUrl: formData.profileImage || undefined,
       },
@@ -120,6 +125,8 @@ export default function ReviewPage() {
       email: cvData.personalInfo?.email ?? "",
       phone: cvData.personalInfo?.phoneNumber ?? "",
       address: cvData.personalInfo?.address ?? "",
+      jobTitle: cvData.personalInfo?.role ?? "",
+      website: cvData.personalInfo?.website ?? "",
       summary: cvData.personalInfo?.summary ?? "",
       languages: (cvData.languages ?? []).map((lang) => ({
         name: lang.name,
@@ -164,10 +171,11 @@ export default function ReviewPage() {
         const tcvContent: TCVContent = {
           personalInfo: {
             fullName: formData.fullName || "",
-            role: "",
+            role: formData.jobTitle || "",
             email: formData.email || "",
             phoneNumber: formData.phone || "",
             address: formData.address || "",
+            website: formData.website || "",
             summary: formData.summary || "",
             photoUrl: formData.profileImage || undefined,
           },
@@ -240,6 +248,12 @@ export default function ReviewPage() {
                   placeholder="Your full name"
                 />
 
+                <FormInput
+                  name="jobTitle"
+                  label="Job Title"
+                  placeholder="Your current job title"
+                />
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput
                     name="email"
@@ -254,11 +268,19 @@ export default function ReviewPage() {
                   />
                 </div>
 
-                <FormInput
-                  name="address"
-                  label="Address"
-                  placeholder="Street, City, Country"
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormInput
+                    name="address"
+                    label="Address"
+                    placeholder="Street, City, Country"
+                  />
+                  <FormInput
+                    name="website"
+                    label="Website / Portfolio"
+                    type="url"
+                    placeholder="https://example.com"
+                  />
+                </div>
               </div>
             </div>
           </Card>
