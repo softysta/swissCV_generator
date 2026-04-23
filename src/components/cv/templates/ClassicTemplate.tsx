@@ -83,42 +83,44 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
 
           <div className="space-y-5 mt-3">
             <section>
-              <h2
-                className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block`}
-              >
-                CONTACT
-              </h2>
-              <div className="mt-4 space-y-2.5 text-[11px] font-semibold">
-                <p className="flex items-center gap-1">
-                  <Mail
-                    size={16}
-                    className="inline-block mr-1 text-[#3D509F]"
-                  />
-                  {personalInfo.email}
-                </p>
-                <p className="flex items-center gap-1">
-                  <Phone
-                    size={16}
-                    className="inline-block mr-1 text-[#3D509F]"
-                  />
-                  {personalInfo.phoneNumber}
-                </p>
+                <h2
+                  className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block`}
+                >
+                  CONTACT
+                </h2>
+              <div className="mt-4 space-y-2.5 text-[11px] font-semibold leading-tight">
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <Mail size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">{personalInfo.email}</span>
+                </div>
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <Phone size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">
+                    {personalInfo.phoneNumber}
+                  </span>
+                </div>
                 {personalInfo.website && (
-                  <p className="flex items-center gap-1">
-                    <Globe
-                      size={16}
-                      className="inline-block mr-1 text-[#3D509F]"
-                    />
-                    {personalInfo.website}
-                  </p>
+                  <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                    <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                      <Globe size={16} className="text-[#3D509F]" />
+                    </span>
+                    <span className="wrap-break-word">
+                      {personalInfo.website}
+                    </span>
+                  </div>
                 )}
-                <p className="flex items-center gap-1">
-                  <MapPin
-                    size={16}
-                    className="inline-block mr-1 text-[#3D509F]"
-                  />
-                  {personalInfo.address}
-                </p>
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <MapPin size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">
+                    {personalInfo.address}
+                  </span>
+                </div>
               </div>
             </section>
           </div>
@@ -189,7 +191,7 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
       </aside>
 
       {/* ── MAIN CONTENT ────────────────────────────────────────── */}
-      <main style={{ flex: 1, padding: "40px 50px 40px 10px", zIndex: 20 }}>
+      <main style={{ flex: 1, padding: "30px 50px 30px 20px", zIndex: 20 }}>
         {/* Navy Header Section [cite: 7, 8] */}
         <h1 className={montserrat.className} style={nameStyle}>
           {firstName}
@@ -265,7 +267,7 @@ const nameStyle: React.CSSProperties = {
 };
 
 const jobTitleStyle: React.CSSProperties = {
-  fontSize: 14,
+  fontSize: 16,
   fontWeight: "bold",
   letterSpacing: 1,
   marginTop: 12,
@@ -276,17 +278,7 @@ const jobTitleStyle: React.CSSProperties = {
 const navyDividerStyle: React.CSSProperties = {
   width: 55,
   height: 4,
-  margin: "25px 0",
-};
-
-const sidebarHeaderStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: "bold",
-  color: NAVY,
-  borderBottom: `1px solid ${NAVY}`,
-  paddingBottom: 5,
-  marginBottom: 10,
-  letterSpacing: 1,
+  margin: "22px 0",
 };
 
 const mainHeaderStyle: React.CSSProperties = {
