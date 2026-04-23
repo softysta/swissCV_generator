@@ -1,6 +1,8 @@
 "use client";
 
 import { TCVTemplateProps } from "@/types/cvContent.tye";
+import { Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Montserrat, Open_Sans } from "next/font/google";
 import React from "react";
 
 /**
@@ -11,8 +13,14 @@ import React from "react";
  */
 
 const NAVY = "#1e2d5e";
-const SIDEBAR_BG = "#eaebf5";
-const PHOTO_BG = "#c9cbe5";
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["600", "400", "700", "800"],
+});
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
 
 export default function ClassicTemplate({ data }: TCVTemplateProps) {
   const {
@@ -31,96 +39,168 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
 
   return (
     <div
+      className={openSans.className}
       style={{
         display: "flex",
+        position: "relative",
+        gap: 0,
         width: 794,
         minHeight: 1123,
-        fontFamily: "Georgia, serif",
-        background: "#ffffff",
+        background:
+          "linear-gradient(to bottom, #DCE1F5 0, #DCE1F5 180px, #ffffff 180px, #ffffff 100%)",
       }}
     >
       {/* ── SIDEBAR ────────────────────────────────────────────── */}
-      <aside style={{ width: 272, background: SIDEBAR_BG, flexShrink: 0 }}>
+      <aside style={{ width: 300, padding: "30px 10px 30px 30px", zIndex: 20 }}>
         {/* Full-width Photo Layout [cite: 1] */}
-        <div
-          style={{
-            width: 272,
-            height: 280,
-            background: PHOTO_BG,
-            overflow: "hidden",
-          }}
-        >
-          {personalInfo.photoUrl ? (
-            <img
-              src={personalInfo.photoUrl}
-              alt={personalInfo.fullName}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: 80,
-              }}
-            >
-              <PersonPlaceholder />
-            </div>
-          )}
+        <div className="p-5 bg-[#F5F7FF] mb-3">
+          <div
+            style={{
+              width: "100%",
+              height: "220px",
+              padding: "8px 28px 8px 10px",
+              overflow: "hidden",
+            }}
+          >
+            {personalInfo.photoUrl ? (
+              <div
+                aria-label={personalInfo.fullName}
+                role="img"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${personalInfo.photoUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: 80,
+                }}
+              >
+                <PersonPlaceholder />
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-5 mt-3">
+            <section>
+              <h2
+                className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block`}
+              >
+                CONTACT
+              </h2>
+              <div className="mt-4 space-y-2.5 text-[11px] font-semibold leading-tight">
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <Mail size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">{personalInfo.email}</span>
+                </div>
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <Phone size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">
+                    {personalInfo.phoneNumber}
+                  </span>
+                </div>
+                {personalInfo.website && (
+                  <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                    <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                      <Globe size={16} className="text-[#3D509F]" />
+                    </span>
+                    <span className="wrap-break-word">
+                      {personalInfo.website}
+                    </span>
+                  </div>
+                )}
+                <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
+                  <span className="flex h-4 w-4 items-center justify-center mt-1.25">
+                    <MapPin size={16} className="text-[#3D509F]" />
+                  </span>
+                  <span className="wrap-break-word">
+                    {personalInfo.address}
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
 
-        <div style={{ padding: "40px 30px" }}>
-          {/* Contact Section [cite: 1] */}
-          <SidebarSection title="CONTACT">
-            <SidebarRow>{personalInfo.email}</SidebarRow>
-            <SidebarRow>{personalInfo.phoneNumber}</SidebarRow>
-            {personalInfo.website && (
-              <SidebarRow>{personalInfo.website}</SidebarRow>
-            )}
-            <SidebarRow>{personalInfo.address}</SidebarRow>
-          </SidebarSection>
-
-          {/* Software Section [cite: 19] */}
+        <section className="p-5 bg-[#F5F7FF] mb-3">
+          <h2
+            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-3`}
+          >
+            COMPÉTENCES
+          </h2>
           {skills.length > 0 && (
-            <SidebarSection title="LOGICIELS MAÎTRISÉS">
-              {skills.map((s, i) => (
-                <SidebarRow key={i}>{s}</SidebarRow>
-              ))}
-            </SidebarSection>
+            <div>
+              <h2
+                className={`${montserrat.className} text-[10px] font-black text-[#000000] inline-block mb-2`}
+              >
+                LOGICIELS MAÎTRISÉS
+              </h2>
+              <div className="space-y-1.5 text-[11px] font-semibold">
+                {skills.map((skill, i) => (
+                  <p key={i}>{skill}</p>
+                ))}
+              </div>
+            </div>
           )}
 
-          {/* Languages Section [cite: 24] */}
           {languages.length > 0 && (
-            <SidebarSection title="LANGUES PARLÉES">
-              {languages.map((l, i) => (
-                <SidebarRow key={i}>
-                  {l.name}: {l.proficiency}
-                </SidebarRow>
-              ))}
-            </SidebarSection>
+            <div className="mt-4">
+              <h2
+                className={`${montserrat.className} text-[10px] font-black text-[#000000] inline-block mb-2`}
+              >
+                LANGUES MAÎTRISÉES
+              </h2>
+              <div className="space-y-1.5 text-[12px] font-semibold">
+                {languages.map((language, i) => (
+                  <p key={i}>
+                    {language.name}: {language.proficiency}
+                  </p>
+                ))}
+              </div>
+            </div>
           )}
+        </section>
 
-          {/* Education Section [cite: 27] */}
+        <section className="p-5 bg-[#F5F7FF] mb-3">
+          <h2
+            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-4`}
+          >
+            FORMATION
+          </h2>
+
           {education.length > 0 && (
-            <SidebarSection title="FORMATION">
+            <div>
               {education.map((edu, i) => (
-                <div key={i} style={{ marginBottom: 15 }}>
-                  <p style={eduTitleStyle}>{edu.degree}</p>
-                  <p style={eduSubStyle}>{edu.institutionName}</p>
-                  <p style={eduDateStyle}>
+                <div key={i} className="mb-[3.75]">
+                  <p className="text-[12px] font-bold mb-1">{edu.degree}</p>
+                  <p className="text-[11px] italic mb-1">
+                    {edu.institutionName}
+                  </p>
+                  <p className="text-[10px] font-semibold">
                     {edu.startDate} - {edu.endDate}
                   </p>
                 </div>
               ))}
-            </SidebarSection>
+            </div>
           )}
-        </div>
+        </section>
       </aside>
 
       {/* ── MAIN CONTENT ────────────────────────────────────────── */}
-      <main style={{ flex: 1, padding: "50px 45px" }}>
+      <main style={{ flex: 1, padding: "30px 50px 30px 20px", zIndex: 20 }}>
         {/* Navy Header Section [cite: 7, 8] */}
-        <h1 style={nameStyle}>
+        <h1 className={montserrat.className} style={nameStyle}>
           {firstName}
           <br />
           {lastName}
@@ -175,102 +255,68 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
   );
 }
 
-// ── STYLES ──────────────────────────────────────────────────
-
-function SidebarSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div style={{ marginBottom: 30 }}>
-      <h2 style={sidebarHeaderStyle}>{title}</h2>
-      {children}
-    </div>
-  );
-}
-
-function SidebarRow({ children }: { children: React.ReactNode }) {
-  return (
-    <p style={{ fontSize: 11, margin: "4px 0", color: "#333" }}>{children}</p>
-  );
-}
-
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 15 }}>
-      <h2 style={mainHeaderStyle}>{children}</h2>
-      <div style={{ height: 2, background: NAVY, width: "100%" }} />
+      <h2 className={montserrat.className} style={mainHeaderStyle}>
+        {children}
+      </h2>
     </div>
   );
 }
 
 const nameStyle: React.CSSProperties = {
   fontSize: 48,
-  fontWeight: 900,
-  color: NAVY,
+  fontWeight: 400,
   lineHeight: 0.9,
-  margin: 0,
+  marginBottom: 16,
   textTransform: "uppercase",
 };
 
 const jobTitleStyle: React.CSSProperties = {
-  fontSize: 14,
+  fontSize: 16,
   fontWeight: "bold",
-  color: NAVY,
-  letterSpacing: 3,
+  letterSpacing: 1,
   marginTop: 12,
+  marginLeft: 5,
   textTransform: "uppercase",
 };
 
 const navyDividerStyle: React.CSSProperties = {
   width: 55,
   height: 4,
-  background: NAVY,
-  margin: "25px 0",
-};
-
-const sidebarHeaderStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: "bold",
-  color: NAVY,
-  borderBottom: `1px solid ${NAVY}`,
-  paddingBottom: 5,
-  marginBottom: 10,
-  letterSpacing: 1,
+  margin: "22px 0",
 };
 
 const mainHeaderStyle: React.CSSProperties = {
   fontSize: 16,
   fontWeight: "bold",
   color: NAVY,
-  letterSpacing: 2,
-  marginBottom: 4,
+  padding: "0 3px",
+  backgroundColor: "#F5F7FF",
+  display: "inline-block",
 };
 
 const summaryStyle: React.CSSProperties = {
-  fontSize: 11.5,
-  lineHeight: 1.6,
-  color: "#444",
-  marginBottom: 35,
+  fontSize: 13,
+  marginBottom: 28,
+  fontWeight: 500,
 };
 
 const expPosStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: 13,
   fontWeight: "bold",
-  color: NAVY,
   margin: 0,
+  textTransform: "uppercase",
 };
 
 const expDateStyle: React.CSSProperties = {
-  fontSize: 11,
-  color: "#777",
+  fontSize: 12,
+  fontWeight: "bold",
 };
 
 const expCompanyStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: 12,
   fontStyle: "italic",
   margin: "2px 0 6px 0",
 };
@@ -278,13 +324,13 @@ const expCompanyStyle: React.CSSProperties = {
 const expDescStyle: React.CSSProperties = {
   fontSize: 11,
   lineHeight: 1.5,
-  color: "#444",
+  fontWeight: "bold",
 };
 
 const expertiseStyle: React.CSSProperties = {
-  fontSize: 11.5,
+  fontSize: 12,
   margin: "4px 0",
-  color: "#444",
+  fontWeight: "bold",
 };
 
 const eduTitleStyle: React.CSSProperties = {
