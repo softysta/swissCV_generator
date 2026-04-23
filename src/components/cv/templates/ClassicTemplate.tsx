@@ -133,9 +133,9 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
           </div>
         </div>
 
-        <section className="p-5 bg-[#F5F7FF] mb-3">
+        <section className="px-5 py-4 bg-[#F5F7FF] mb-3">
           <h2
-            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-3`}
+            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-1`}
           >
             COMPÉTENCES
           </h2>
@@ -157,7 +157,7 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
           {languages.length > 0 && (
             <div className="mt-4">
               <h2
-                className={`${montserrat.className} text-[10px] font-black text-[#000000] inline-block mb-2`}
+                className={`${montserrat.className} text-[10px] font-black text-[#000000] inline-block`}
               >
                 LANGUES MAÎTRISÉES
               </h2>
@@ -172,19 +172,19 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
           )}
         </section>
 
-        <section className="p-5 bg-[#F5F7FF] mb-3">
+        <section className="px-5 pt-3 bg-[#F5F7FF]">
           <h2
-            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-4`}
+            className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block mb-2`}
           >
             FORMATION
           </h2>
 
           {education.length > 0 && (
-            <div>
+            <div className="flex flex-col gap-1">
               {education.map((edu, i) => (
                 <div key={i} className="mb-[3.75]">
-                  <p className="text-[12px] font-bold mb-1">{edu.degree}</p>
-                  <p className="text-[11px] italic mb-1">
+                  <p className="text-[12px] font-bold">{edu.degree}</p>
+                  <p className="text-[11px] italic">
                     {edu.institutionName}
                   </p>
                   <p className="text-[10px] font-semibold">
