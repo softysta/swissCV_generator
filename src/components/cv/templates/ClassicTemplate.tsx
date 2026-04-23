@@ -57,16 +57,23 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
           <div
             style={{
               width: "100%",
-              height: 200,
+              height: "220px",
               padding: "8px 28px 8px 10px",
               overflow: "hidden",
             }}
           >
             {personalInfo.photoUrl ? (
-              <img
-                src={personalInfo.photoUrl}
-                alt={personalInfo.fullName}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              <div
+                aria-label={personalInfo.fullName}
+                role="img"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${personalInfo.photoUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
               />
             ) : (
               <div
@@ -83,11 +90,11 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
 
           <div className="space-y-5 mt-3">
             <section>
-                <h2
-                  className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block`}
-                >
-                  CONTACT
-                </h2>
+              <h2
+                className={`${montserrat.className} text-[16px] font-bold tracking-[1px] text-[#1e2d5e] bg-white inline-block`}
+              >
+                CONTACT
+              </h2>
               <div className="mt-4 space-y-2.5 text-[11px] font-semibold leading-tight">
                 <div className="grid grid-cols-[16px_1fr] items-start gap-x-2">
                   <span className="flex h-4 w-4 items-center justify-center mt-1.25">
