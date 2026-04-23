@@ -1,6 +1,15 @@
+"use client"
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export function Navbar() {
+  const pathname = usePathname();
+
+  // Don't render on cv-preview route
+  if (pathname.startsWith('/cv-preview')) {
+    return null;
+  }
+
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
       <div className="w-full px-4 sm:px-6 py-2 sm:py-2.5">

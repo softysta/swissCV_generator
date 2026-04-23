@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useCVContext } from "@/store/CVContext";
-import ClassicTemplate from "@/components/cv/templates/ClassicTemplate";
-import ModernTemplate from "@/components/cv/templates/ModernTemplate";
 import TemplateCard from "@/components/cv/TemplateCard";
 import DownloadPanel from "@/components/cv/DownloadPanel";
 import { TCVContent, TTemplateId } from "@/types/cvContent.tye";
 import { exportCVAsPDF } from "@/utils/exportPDF";
+import ClassicTemplate from "@/components/cv/templates/ClassicTemplate";
+import ModernTemplate from "@/components/cv/templates/ModernTemplate";
 
 // ─── Template registry ────────────────────────────────────────────────────────
 
@@ -37,19 +37,15 @@ export default function GeneratePage() {
   const { cvData, selectedTemplate, setSelectedTemplate } = useCVContext();
   const [isExporting, setIsExporting] = useState(false);
 
-  const classicRef = useRef<HTMLDivElement>(null);
-  const modernRef = useRef<HTMLDivElement>(null);
-
   // Use real context data or fallback to demo data
   const data: TCVContent = cvData ?? DEMO_DATA;
 
   const handleExport = async () => {
-    const ref = selectedTemplate === "classic" ? classicRef : modernRef;
-    if (!ref.current) return;
     setIsExporting(true);
     try {
       await exportCVAsPDF(
-        ref.current,
+        data,
+        selectedTemplate,
         `CV_${data.personalInfo.fullName.replace(/\s+/g, "_")}.pdf`,
       );
     } finally {
@@ -142,30 +138,6 @@ export default function GeneratePage() {
       >
         © 2024 SwissCV Generator. Designed for Precision.
       </p>
-
-      {/* ── Hidden full-size refs for html2canvas export ─────────── */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: -9999,
-          zIndex: -1,
-          pointerEvents: "none",
-        }}
-      >
-        <div
-          ref={classicRef}
-          style={{ width: 794, height: 1123, overflow: "hidden" }}
-        >
-          <ClassicTemplate data={data} />
-        </div>
-        <div
-          ref={modernRef}
-          style={{ width: 794, height: 1123, overflow: "hidden" }}
-        >
-          <ModernTemplate data={data} />
-        </div>
-      </div>
     </div>
   );
 }

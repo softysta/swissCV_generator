@@ -14,6 +14,11 @@ const steps = [
 export function StepsIndicator() {
   const pathname = usePathname();
 
+  // Don't render on cv-preview route
+  if (pathname.startsWith('/cv-preview')) {
+    return null;
+  }
+
   // Determine current step based on pathname
   const getCurrentStep = () => {
     const step = steps.find((s) => s.path === pathname);
