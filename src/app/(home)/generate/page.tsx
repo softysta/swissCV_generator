@@ -101,8 +101,9 @@ export default function GeneratePage() {
             {/* Template Cards Grid */}
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                display: "flex",
+                flexDirection: "column",
+                // gridTemplateColumns: "1fr 1fr",
                 gap: 24,
               }}
             >

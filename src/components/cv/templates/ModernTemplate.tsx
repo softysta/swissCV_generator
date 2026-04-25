@@ -1,16 +1,6 @@
 "use client";
 
 import { TCVTemplateProps } from "@/types/cvContent.tye";
-import React from "react";
-
-/**
- * EXACT REPLICA TEMPLATE
- * - Sidebar: Solid Navy (#0f1e5c) with white text and dividers.
- * - Sections: Full-width Navy background bars for "EXPÉRIENCES PROFESSIONNELLES", etc.
- * - Content: Bullet points (●) for titles within main sections.
- */
-
-const NAVY = "#0f1e5c";
 
 export default function ModernTemplate({ data }: TCVTemplateProps) {
   const {
@@ -24,128 +14,153 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
 
   return (
     <div
-      style={{
-        display: "flex",
-        width: 794,
-        minHeight: 1123,
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        background: "#ffffff",
-      }}
+      className="flex w-[794px] min-h-[1123px] bg-[#0f1e5c] font-sans"
+      style={{ fontFamily: "Open Sans, sans-serif" }}
     >
-      {/* ── SIDEBAR ────────────────────────────────────────────── */}
-      <aside
-        style={{
-          width: 280,
-          background: NAVY,
-          color: "#ffffff",
-          display: "flex",
-          flexDirection: "column",
-          flexShrink: 0,
-        }}
-      >
-        {/* Profile Image - Square/Slightly Portrait */}
-        <div
-          style={{
-            width: "100%",
-            height: 240,
-            padding: "25px",
-            boxSizing: "border-box",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              background: "#fff",
-              border: "4px solid #fff",
-              overflow: "hidden",
-            }}
-          >
+      {/* ── SIDEBAR ── full navy top-to-bottom */}
+      <aside className="w-[280px]  text-white flex flex-col shrink-0">
+        {/* Profile photo box */}
+        <div className="w-full h-[280px] px-[28px] py-[24px] mt-[3px] box-border">
+          <div className="w-full h-full border-8 border-white overflow-hidden">
             {personalInfo.photoUrl ? (
               <img
                 src={personalInfo.photoUrl}
                 alt={personalInfo.fullName}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div style={{ background: "#ccc", height: "100%" }} />
+              <div className="bg-gray-300 h-full w-full" />
             )}
           </div>
         </div>
 
-        <div style={{ padding: "0 25px 40px" }}>
-          {/* Informations */}
-          <SidebarSection title="INFORMATIONS">
-            <SidebarRow>Permis B</SidebarRow>
-            <SidebarRow>{personalInfo.phoneNumber}</SidebarRow>
-            <SidebarRow>{personalInfo.email}</SidebarRow>
-            <SidebarRow>{personalInfo.address}</SidebarRow>
-          </SidebarSection>
-
-          {/* Compétences */}
-          {skills.length > 0 && (
-            <SidebarSection title="COMPÉTENCES">
-              {skills.map((skill, i) => (
-                <SidebarRow key={i}>{skill}</SidebarRow>
-              ))}
-            </SidebarSection>
-          )}
-
-          {/* Langues */}
-          {languages.length > 0 && (
-            <SidebarSection title="LANGUES">
-              {languages.map((lang, i) => (
-                <SidebarRow key={i}>
-                  {lang.name} ({lang.proficiency})
-                </SidebarRow>
-              ))}
-            </SidebarSection>
-          )}
-
-          {/* Intérêts */}
-          {interests.length > 0 && (
-            <SidebarSection title="INTERÊTS">
-              {interests.map((item, i) => (
-                <SidebarRow key={i}>{item}</SidebarRow>
-              ))}
-            </SidebarSection>
-          )}
+        <div className="pl-[50px] mt-2">
+          <div className="mb-[25px]">
+            <h2
+              className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              INFORMATIONS
+            </h2>
+            <p className="text-[11.5px] my-[6px] opacity-90">Permis B</p>
+            <p className="text-[11.5px] my-[6px] opacity-90">
+              {personalInfo.phoneNumber}
+            </p>
+            <p className="text-[11.5px] my-[6px] opacity-90">
+              {personalInfo.email}
+            </p>
+            <p className="text-[11.5px] my-[6px] opacity-90">
+              {personalInfo.address}
+            </p>
+          </div>
         </div>
+
+        <div className="w-full h-[2px] bg-white mb-6"></div>
+
+        {skills.length > 0 && (
+          <div className="mb-[25px] pl-[50px]">
+            <h2
+              className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              COMPÉTENCES
+            </h2>
+            {skills.map((skill, i) => (
+              <p key={i} className="text-[13px] my-[6px] opacity-90">
+                {skill}
+              </p>
+            ))}
+          </div>
+        )}
+
+        <div className="w-full h-[2px] bg-white mb-6"></div>
+
+        {languages.length > 0 && (
+          <div className="mb-[25px] pl-[50px]">
+            <h2
+              className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              LANGUES
+            </h2>
+            {languages.map((lang, i) => (
+              <p key={i} className="text-[11.5px] my-[4px] opacity-90">
+                {lang.name} ({lang.proficiency})
+              </p>
+            ))}
+          </div>
+        )}
+
+        <div className="w-full h-[2px] bg-white mb-6"></div>
+
+        {interests.length > 0 && (
+          <div className="mb-[25px] px-[50px]">
+            <h2
+              className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              INTERÊTS
+            </h2>
+            {interests.map((item, i) => (
+              <p key={i} className="text-[11.5px] my-[6px] opacity-90">
+                {item}
+              </p>
+            ))}
+          </div>
+        )}
       </aside>
 
-      {/* ── MAIN CONTENT ────────────────────────────────────────── */}
-      <main style={{ flex: 1, padding: "40px 30px" }}>
-        {/* Name and Professional Title */}
-        <header style={{ marginBottom: 25 }}>
-          <h1 style={nameStyle}>{personalInfo.fullName}</h1>
-          <p style={titleStyle}>
+      {/* ── MAIN CONTENT ── white background */}
+      <main className="flex-1">
+        {/* Name + Title + Summary */}
+        <header className="bg-white px-[26px] py-[36px] mt-4 mr-3">
+          <h1
+            className="text-[42px] font-bold text-[#0f1e5c] m-0 mb-[5px] leading-none"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
+          >
+            {personalInfo.fullName}
+          </h1>
+          <p
+            className="text-[22px] mt-[12px] text-[#0f1e5c] font-semibold tracking-[2px] uppercase mb-[11px]"
+            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 500 }}
+          >
             {personalInfo.role || "CHARGÉ DE COMMUNICATION"}
           </p>
           {personalInfo.summary && (
-            <p style={summaryStyle}>{personalInfo.summary}</p>
+            <p className="text-[12px] font-semibold leading-[1.6] m-0">
+              {personalInfo.summary}
+            </p>
           )}
         </header>
 
-        {/* Experience Section */}
+        <section className="py-[2px]">
+          <h2 className="pl-[26px] text-2xl text-white tracking-[2px] font-bold leading-7">
+            EXPÉRIENCES PROFESSIONNELLES
+          </h2>
+        </section>
+
+        {/* EXPÉRIENCES PROFESSIONNELLES */}
         {experiences.length > 0 && (
-          <section style={{ marginBottom: 30 }}>
-            <SectionHeader>EXPÉRIENCES PROFESSIONNELLES</SectionHeader>
+          <section className="bg-white px-[26px] py-[30px] mr-3">
             {experiences.map((exp, i) => (
-              <div key={i} style={{ marginBottom: 20 }}>
-                <div style={entryHeaderStyle}>
-                  <span style={bulletStyle}>●</span>
-                  <h3 style={entryTitleStyle}>
+              <div key={i} className="mb-[20px]">
+                <div className="flex items-center mb-[4px] gap-3">
+                  <div className="bg-blue-950 size-4 mt-2 rounded-full"></div>
+                  <h3
+                    className="text-[15px] font-bold text-black m-0"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
                     {exp.position} - {exp.companyName}
                   </h3>
                 </div>
-                <p style={dateStyle}>
-                  {exp.startDate.toUpperCase()} -{" "}
-                  {exp.isCurrent
-                    ? "ACTUEL"
-                    : (exp.endDate ?? "PRÉSENT").toUpperCase()}
+                <p className="text-xs font-semibold text-gray-600 px-[30px]">
+                  {formatDateRange(exp.startDate, exp.endDate, "en")}
                 </p>
                 {exp.description.map((desc, j) => (
-                  <p key={j} style={descStyle}>
+                  <p
+                    key={j}
+                    className="text-[12px] leading-[1.5] text-[#000000] pl-[30px] mb-[3px] mt-1"
+                  >
                     {desc}
                   </p>
                 ))}
@@ -154,20 +169,30 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </section>
         )}
 
-        {/* Education Section */}
+        <section className="py-[2px]">
+          <h2 className="pl-[26px] text-2xl text-white tracking-[2px] font-bold leading-7">
+            FORMATIONS
+          </h2>
+        </section>
+
+        {/* FORMATIONS */}
         {education.length > 0 && (
-          <section>
-            <SectionHeader>FORMATIONS</SectionHeader>
+          <section className="bg-white px-[26px] py-[2px] mr-3">
             {education.map((edu, i) => (
-              <div key={i} style={{ marginBottom: 20 }}>
-                <div style={entryHeaderStyle}>
-                  <span style={bulletStyle}>●</span>
-                  <h3 style={entryTitleStyle}>{edu.degree}</h3>
+              <div key={i} className="mb-[20px] mt-[24px]">
+                <div className="flex items-center mb-[4px]">
+                  <div className="bg-blue-950 size-4 mt-2 rounded-full"></div>
+                  <h3
+                    className="text-[14px] font-bold text-black ml-2"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    {edu.degree}
+                  </h3>
                 </div>
-                <p style={dateStyle}>
+                <p className="text-[11px] font-bold  pl-[24px] mb-[6px] mt-0">
                   {edu.startDate} - {edu.endDate}
                 </p>
-                <p style={descStyle}>
+                <p className="text-[11px] leading-[1.5] font-semibold pl-[22px] mb-[3px] mt-0">
                   {edu.institutionName} -{" "}
                   {personalInfo.address?.split(",").pop()?.trim() || "Any City"}
                 </p>
@@ -180,118 +205,51 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
   );
 }
 
-// ── COMPONENTS ─────────────────────────────────────────────────────────────
+function formatDateRange(
+  start: string | undefined,
+  end: string | undefined,
+  lang: "en" | "fr" = "en",
+) {
+  const months = {
+    en: [
+      "JANUARY",
+      "FEBRUARY",
+      "MARCH",
+      "APRIL",
+      "MAY",
+      "JUNE",
+      "JULY",
+      "AUGUST",
+      "SEPTEMBER",
+      "OCTOBER",
+      "NOVEMBER",
+      "DECEMBER",
+    ],
+    fr: [
+      "JANVIER",
+      "FÉVRIER",
+      "MARS",
+      "AVRIL",
+      "MAI",
+      "JUIN",
+      "JUILLET",
+      "AOÛT",
+      "SEPTEMBRE",
+      "OCTOBRE",
+      "NOVEMBRE",
+      "DÉCEMBRE",
+    ],
+  };
 
-function SidebarSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div style={{ marginBottom: 25 }}>
-      <h2 style={sidebarTitleStyle}>{title}</h2>
-      <div
-        style={{
-          height: 1,
-          background: "rgba(255,255,255,0.4)",
-          margin: "8px 0 12px",
-        }}
-      />
-      {children}
-    </div>
-  );
+  const startDate = new Date(start || "");
+  const endDate = !end || end === "present" ? null : new Date(end);
+
+  const startText = `${months[lang][startDate.getMonth()]} ${startDate.getFullYear()}`;
+  const endText = endDate
+    ? `${months[lang][endDate.getMonth()]} ${endDate.getFullYear()}`
+    : lang === "fr"
+      ? "ACTUEL"
+      : "PRESENT";
+
+  return `${startText} - ${endText}`;
 }
-
-function SidebarRow({ children }: { children: React.ReactNode }) {
-  return (
-    <p style={{ fontSize: 11.5, margin: "6px 0", opacity: 0.9 }}>{children}</p>
-  );
-}
-
-function SectionHeader({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ background: NAVY, padding: "8px 15px", marginBottom: 18 }}>
-      <h2
-        style={{
-          color: "#fff",
-          fontSize: 14,
-          fontWeight: "bold",
-          letterSpacing: 1.5,
-          margin: 0,
-        }}
-      >
-        {children}
-      </h2>
-    </div>
-  );
-}
-
-// ── STYLES ─────────────────────────────────────────────────────────────────
-
-const nameStyle: React.CSSProperties = {
-  fontSize: 42,
-  fontWeight: 900,
-  color: NAVY,
-  margin: "0 0 5px 0",
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: 18,
-  color: NAVY,
-  letterSpacing: 1,
-  fontWeight: "bold",
-  textTransform: "uppercase",
-  margin: "0 0 15px 0",
-};
-
-const summaryStyle: React.CSSProperties = {
-  fontSize: 10.5,
-  lineHeight: 1.6,
-  color: "#333",
-  margin: 0,
-};
-
-const sidebarTitleStyle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: "bold",
-  letterSpacing: 2,
-  textTransform: "uppercase",
-  margin: 0,
-};
-
-const entryHeaderStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  marginBottom: 4,
-};
-
-const bulletStyle: React.CSSProperties = {
-  color: NAVY,
-  fontSize: 16,
-  marginRight: 10,
-};
-
-const entryTitleStyle: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: "bold",
-  color: "#000",
-  margin: 0,
-};
-
-const dateStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: "bold",
-  color: "#666",
-  paddingLeft: 22,
-  marginBottom: 6,
-};
-
-const descStyle: React.CSSProperties = {
-  fontSize: 11,
-  lineHeight: 1.5,
-  color: "#444",
-  paddingLeft: 22,
-  marginBottom: 3,
-};
