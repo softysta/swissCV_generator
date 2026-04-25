@@ -49,7 +49,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </div>
         </div>
 
-        <div className="pl-[50px] mt-2">
+        <div className="pl-[45px] mt-2">
           <div className="mb-[25px]">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
@@ -76,7 +76,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         ></div>
 
         {skills.length > 0 && (
-          <div className="mb-[25px] pl-[50px]">
+          <div className="mb-[25px] pl-[45px]">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
               style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -97,7 +97,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         ></div>
 
         {languages.length > 0 && (
-          <div className="mb-[25px] pl-[50px]">
+          <div className="mb-[25px] pl-[45px]">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
               style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -118,7 +118,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         ></div>
 
         {interests.length > 0 && (
-          <div className="mb-[25px] px-[50px]">
+          <div className="mb-[25px] pl-[45px]">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
               style={{ fontFamily: "Montserrat, sans-serif" }}
