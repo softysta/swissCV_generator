@@ -15,21 +15,36 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
   return (
     <div
       className="flex w-[794px] min-h-[1123px] bg-[#0f1e5c] font-sans"
-      style={{ fontFamily: "Open Sans, sans-serif" }}
+      style={{
+        fontFamily: "Open Sans, sans-serif",
+        backgroundColor: "#0f1e5c",
+      }}
     >
       {/* ── SIDEBAR ── full navy top-to-bottom */}
-      <aside className="w-[280px]  text-white flex flex-col shrink-0">
+      <aside
+        className="w-[280px] flex flex-col shrink-0"
+        style={{ color: "#ffffff" }}
+      >
         {/* Profile photo box */}
         <div className="w-full h-[280px] px-[28px] py-[24px] mt-[3px] box-border">
           <div className="w-full h-full border-8 border-white overflow-hidden">
             {personalInfo.photoUrl ? (
-              <img
-                src={personalInfo.photoUrl}
-                alt={personalInfo.fullName}
-                className="w-full h-full object-cover"
+              <div
+                aria-label={personalInfo.fullName}
+                role="img"
+                className="w-full h-full"
+                style={{
+                  backgroundImage: `url(${personalInfo.photoUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
               />
             ) : (
-              <div className="bg-gray-300 h-full w-full" />
+              <div
+                className="h-full w-full"
+                style={{ backgroundColor: "#d1d5db" }}
+              />
             )}
           </div>
         </div>
@@ -55,7 +70,10 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </div>
         </div>
 
-        <div className="w-full h-[2px] bg-white mb-6"></div>
+        <div
+          className="w-full h-[2px] mb-6"
+          style={{ backgroundColor: "#ffffff" }}
+        ></div>
 
         {skills.length > 0 && (
           <div className="mb-[25px] pl-[50px]">
@@ -73,7 +91,10 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </div>
         )}
 
-        <div className="w-full h-[2px] bg-white mb-6"></div>
+        <div
+          className="w-full h-[2px] mb-6"
+          style={{ backgroundColor: "#ffffff" }}
+        ></div>
 
         {languages.length > 0 && (
           <div className="mb-[25px] pl-[50px]">
@@ -91,7 +112,10 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </div>
         )}
 
-        <div className="w-full h-[2px] bg-white mb-6"></div>
+        <div
+          className="w-full h-[2px] mb-6"
+          style={{ backgroundColor: "#ffffff" }}
+        ></div>
 
         {interests.length > 0 && (
           <div className="mb-[25px] px-[50px]">
@@ -113,7 +137,10 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
       {/* ── MAIN CONTENT ── white background */}
       <main className="flex-1">
         {/* Name + Title + Summary */}
-        <header className="bg-white px-[26px] py-[36px] mt-4 mr-3">
+        <header
+          className="px-[26px] pb-[36px] pt-[20px] mt-4 mr-3"
+          style={{ backgroundColor: "#ffffff" }}
+        >
           <h1
             className="text-[42px] font-bold text-[#0f1e5c] m-0 mb-[5px] leading-none"
             style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -133,27 +160,42 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           )}
         </header>
 
-        <section className="py-[2px]">
-          <h2 className="pl-[26px] text-2xl text-white tracking-[2px] font-bold leading-7">
+        <section className="py-[2px] relative w-[100%] h-[30px]">
+          <h2
+            className="pl-[26px] text-2xl tracking-[2px] font-bold leading-7 absolute -top-[10px] left-0"
+            style={{ color: "#ffffff" }}
+          >
             EXPÉRIENCES PROFESSIONNELLES
           </h2>
         </section>
 
         {/* EXPÉRIENCES PROFESSIONNELLES */}
         {experiences.length > 0 && (
-          <section className="bg-white px-[26px] py-[30px] mr-3">
+          <section
+            className="px-[26px] py-[16px] mr-3"
+            style={{ backgroundColor: "#ffffff" }}
+          >
             {experiences.map((exp, i) => (
-              <div key={i} className="mb-[20px]">
+              <div key={i} className="mb-[10px]">
                 <div className="flex items-center mb-[4px] gap-3">
-                  <div className="bg-blue-950 size-4 mt-2 rounded-full"></div>
+                  <div
+                    className="size-4 mt-6 rounded-full"
+                    style={{ backgroundColor: "#172554" }}
+                  ></div>
                   <h3
-                    className="text-[15px] font-bold text-black m-0"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                    className="text-[15px] font-bold m-0"
+                    style={{
+                      fontFamily: "Montserrat, sans-serif",
+                      color: "#000000",
+                    }}
                   >
                     {exp.position} - {exp.companyName}
                   </h3>
                 </div>
-                <p className="text-xs font-semibold text-gray-600 px-[30px]">
+                <p
+                  className="text-xs font-semibold px-[30px]"
+                  style={{ color: "#4b5563" }}
+                >
                   {formatDateRange(exp.startDate, exp.endDate, "en")}
                 </p>
                 {exp.description.map((desc, j) => (
@@ -169,22 +211,34 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </section>
         )}
 
-        <section className="py-[2px]">
-          <h2 className="pl-[26px] text-2xl text-white tracking-[2px] font-bold leading-7">
+        <section className="py-[2px] relative w-[100%] h-[30px]">
+          <h2
+            className="pl-[26px] text-2xl tracking-[2px] font-bold leading-7 absolute -top-[10px] left-0"
+            style={{ color: "#ffffff" }}
+          >
             FORMATIONS
           </h2>
         </section>
 
         {/* FORMATIONS */}
         {education.length > 0 && (
-          <section className="bg-white px-[26px] py-[2px] mr-3">
+          <section
+            className="px-[16px] py-[2px] mr-3"
+            style={{ backgroundColor: "#ffffff" }}
+          >
             {education.map((edu, i) => (
-              <div key={i} className="mb-[20px] mt-[24px]">
-                <div className="flex items-center mb-[4px]">
-                  <div className="bg-blue-950 size-4 mt-2 rounded-full"></div>
+              <div key={i} className="mb-[10px] mt-[24px]">
+                <div className="flex items-center">
+                  <div
+                    className="size-4 mt-6 rounded-full"
+                    style={{ backgroundColor: "#172554" }}
+                  ></div>
                   <h3
-                    className="text-[14px] font-bold text-black ml-2"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                    className="text-[14px] font-bold ml-2"
+                    style={{
+                      fontFamily: "Montserrat, sans-serif",
+                      color: "#000000",
+                    }}
                   >
                     {edu.degree}
                   </h3>
