@@ -1,8 +1,14 @@
 "use client";
 
 import { TCVTemplateProps } from "@/types/cvContent.tye";
+import { useCVFormatting } from "@/hooks/useCVFormatting";
 
 export default function ModernTemplate({ data }: TCVTemplateProps) {
+  // Apply Swiss tone and template-specific formatting
+  const { data: optimizedData } = useCVFormatting(data, {
+    templateId: 'modern',
+  });
+
   const {
     personalInfo,
     experiences,
@@ -10,7 +16,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
     skills = [],
     languages,
     interests = [],
-  } = data;
+  } = optimizedData;
 
   return (
     <div

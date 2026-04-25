@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { applySwissToneToCV } from "@/lib/swissToneConverter";
 
 export async function POST(request: NextRequest) {
   try {
@@ -74,6 +75,10 @@ export async function POST(request: NextRequest) {
       
       extractedData = transformClaudeResponseToTCVContent(rawData, extractedImage);
       console.log("Data transformation successful");
+      
+      // Apply Swiss professional tone to all content
+      extractedData = applySwissToneToCV(extractedData);
+      console.log("Swiss tone conversion applied");
     } catch (error) {
       console.error("Claude extraction failed", error);
       throw error;
@@ -186,8 +191,13 @@ async function extractWithClaude(
                     "issuer": "string",
                     "date": "string"
                   }
-                ]
+                ],
+                "expertise": ["string - specialized areas of knowledge, technical domains, or areas of specialization"],
+                "interests": ["string - personal or professional interests, hobbies"]
               }
+              
+              If expertise is not explicitly listed, derive it from certifications, specialized skills, or significant accomplishments.
+              If interests are not listed, you may extract them from the CV if mentioned, otherwise return empty array.
               
               Please return ONLY the JSON object, no additional text.`,
               },
@@ -315,6 +325,9 @@ function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: 
   const education = (data.education as Array<Record<string, unknown>>) || [];
   const languagesArray = (data.languages as string[]) || [];
   const skillsArray = (data.skills as string[]) || [];
+  const certificationsArray = (data.certifications as Array<Record<string, unknown>>) || [];
+  const expertiseArray = (data.expertise as string[]) || [];
+  const interestsArray = (data.interests as string[]) || [];
 
   return {
     personalInfo: {
@@ -347,10 +360,14 @@ function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: 
       isCurrent: false,
     })),
     skills: skillsArray,
+    expertise: [
+      ...expertiseArray,
+      ...certificationsArray.map((cert: Record<string, unknown>) => cert.name as string).filter((name) => name && name.length > 0),
+    ].filter((item, index, arr) => item && arr.indexOf(item) === index), // Deduplicate
     languages: languagesArray.map((lang: string) => ({
       name: lang,
       proficiency: "Fluent", // Default proficiency if not specified
     })),
-    interests: [],
+    interests: interestsArray,
   };
 }

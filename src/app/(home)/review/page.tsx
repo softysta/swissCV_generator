@@ -30,6 +30,8 @@ interface ReviewFormData {
     proficiency: "Native" | "Fluent" | "Intermediate" | "Basic";
   }>;
   skills: string[];
+  expertise: string[];
+  interests: string[];
   experiences: Array<{
     id: string;
     title: string;
@@ -67,6 +69,8 @@ export default function ReviewPage() {
       summary: "",
       languages: [],
       skills: [],
+      expertise: [],
+      interests: [],
       experiences: [],
       educations: [],
     },
@@ -107,8 +111,9 @@ export default function ReviewPage() {
         isCurrent: false,
       })),
       skills: formData.skills,
+      expertise: formData.expertise,
       languages: formData.languages,
-      interests: [],
+      interests: formData.interests,
     };
 
     setCVData(tcvContent);
@@ -133,6 +138,8 @@ export default function ReviewPage() {
         proficiency: (lang.proficiency as "Native" | "Fluent" | "Intermediate" | "Basic") || "Fluent",
       })),
       skills: cvData.skills ?? [],
+      expertise: cvData.expertise ?? [],
+      interests: cvData.interests ?? [],
       experiences: (cvData.experiences ?? []).map((exp, idx) => ({
         id: `exp-${idx}`,
         title: exp.position ?? "",
@@ -198,8 +205,9 @@ export default function ReviewPage() {
             isCurrent: false,
           })),
           skills: formData.skills,
+          expertise: formData.expertise,
           languages: formData.languages,
-          interests: [],
+          interests: formData.interests,
         };
         setCVData(tcvContent);
       }
@@ -307,6 +315,10 @@ export default function ReviewPage() {
               />
 
               <SkillsField name="skills" label="Skills" />
+
+              <SkillsField name="expertise" label="Expertise & Specializations" />
+
+              <SkillsField name="interests" label="Professional Interests" />
             </div>
           </Card>
 
