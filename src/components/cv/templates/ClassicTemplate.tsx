@@ -1,6 +1,7 @@
 "use client";
 
 import { TCVTemplateProps } from "@/types/cvContent.tye";
+import { useCVFormatting } from "@/hooks/useCVFormatting";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
 import { Montserrat, Open_Sans } from "next/font/google";
 import React from "react";
@@ -23,6 +24,11 @@ const openSans = Open_Sans({
 });
 
 export default function ClassicTemplate({ data }: TCVTemplateProps) {
+  // Apply Swiss tone and template-specific formatting
+  const { data: optimizedData } = useCVFormatting(data, {
+    templateId: 'classic',
+  });
+
   const {
     personalInfo,
     experiences,
@@ -30,7 +36,7 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
     skills = [],
     expertise = [],
     languages,
-  } = data;
+  } = optimizedData;
 
   // Split name for stacked layout
   const nameParts = personalInfo.fullName.split(" ");

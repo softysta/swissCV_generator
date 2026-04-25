@@ -63,8 +63,8 @@ export function CVProvider({ children }: { children: ReactNode }) {
   const [extractionSteps, setExtractionSteps] = useState<ExtractionStep[]>([
     { name: "Reading CV content", status: "waiting" },
     { name: "Extracting personal information", status: "waiting" },
-    { name: "Rewriting in Swiss professional format", status: "waiting" },
-    { name: "Smart-trimming content", status: "waiting" },
+    { name: "Converting to Swiss professional tone", status: "waiting" },
+    { name: "Optimizing for template layout", status: "waiting" },
   ]);
 
   return (
