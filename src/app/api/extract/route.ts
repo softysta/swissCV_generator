@@ -1,5 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { applySwissToneToCV } from "@/lib/swissToneConverter";
+import {
+  extractExpertiseFromExperiences,
+  extractSpecializedKeywords,
+  mergeExpertise,
+} from "@/lib/expertiseExtraction";
+import {
+  detectCVLanguage,
+  type TLanguageCode,
+} from "@/lib/languageLocalization";
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,7 +82,15 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      extractedData = transformClaudeResponseToTCVContent(rawData, extractedImage);
+      // Detect CV language from raw data
+      const detectedLanguage = detectCVLanguage(rawData as any);
+      console.log("Detected CV language:", detectedLanguage);
+      
+      extractedData = transformClaudeResponseToTCVContent(
+        rawData,
+        extractedImage,
+        detectedLanguage
+      );
       console.log("Data transformation successful");
       
       // Apply Swiss professional tone to all content
@@ -172,7 +189,7 @@ async function extractWithClaude(
                     "position": "string",
                     "startDate": "string",
                     "endDate": "string",
-                    "description": "string"
+                    "description": "string (detailed description of responsibilities and accomplishments)"
                   }
                 ],
                 "education": [
@@ -192,11 +209,17 @@ async function extractWithClaude(
                     "date": "string"
                   }
                 ],
-                "expertise": ["string - specialized areas of knowledge, technical domains, or areas of specialization"],
+                "expertise": ["string - specialized areas of knowledge, technical domains, methodologies, or areas of specialization. IMPORTANT: Extract from job descriptions, titles, accomplishments, and certifications. Look for evidence of mastery, specialization, or deep knowledge in specific domains (e.g., Financial Analysis, System Architecture, Project Leadership, etc.)"],
                 "interests": ["string - personal or professional interests, hobbies"]
               }
               
-              If expertise is not explicitly listed, derive it from certifications, specialized skills, or significant accomplishments.
+              EXPERTISE EXTRACTION GUIDELINES:
+              - If a CV has 'Financial Analyst' role with 5+ years and descriptions mention budgeting, forecasting, compliance - include 'Financial Analysis' as expertise
+              - If job descriptions mention 'managed team of 10+', 'led project', 'supervised department' - include 'Team Leadership' or 'Project Management'
+              - If technical roles mention building systems, architecting solutions, designing infrastructure - include relevant technical expertise
+              - Extract expertise from job titles, descriptions, achievements, and certifications - DO NOT leave this empty if the CV shows clear specialization
+              - Combine related certifications with job experience to identify expertise areas
+              
               If interests are not listed, you may extract them from the CV if mentioned, otherwise return empty array.
               
               Please return ONLY the JSON object, no additional text.`,
@@ -317,7 +340,11 @@ function parseExtractedJsonFromText(
 }
 
 // Transform Claude's raw extraction format to TCVContent format
-function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: string): unknown {
+function transformClaudeResponseToTCVContent(
+  rawData: unknown,
+  extractedImage?: string,
+  language: TLanguageCode = "en"
+): unknown {
   const data = rawData as Record<string, unknown>;
 
   const personalInfo = data.personalInfo as Record<string, unknown>;
@@ -328,6 +355,39 @@ function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: 
   const certificationsArray = (data.certifications as Array<Record<string, unknown>>) || [];
   const expertiseArray = (data.expertise as string[]) || [];
   const interestsArray = (data.interests as string[]) || [];
+
+  // Transform experiences
+  const transformedExperiences = experience.map((exp: Record<string, unknown>) => ({
+    companyName: exp.company || "",
+    position: exp.position || "",
+    startDate: exp.startDate || "",
+    endDate: exp.endDate || "",
+    isCurrent:
+      !exp.endDate || (exp.endDate as string)?.trim() === "" || false,
+    description: ((exp.description as string) || "")
+      .split("\n")
+      .filter((line: string) => line.trim().length > 0),
+  }));
+
+  // Extract certifications as expertise
+  const certificationExpertise = certificationsArray
+    .map((cert: Record<string, unknown>) => cert.name as string)
+    .filter((name) => name && name.length > 0);
+
+  // Extract expertise from job descriptions in detected language
+  const inferredExpertise = extractExpertiseFromExperiences(
+    experience,
+    language
+  );
+  const specializedKeywords = extractSpecializedKeywords(experience);
+
+  // Merge all expertise sources with intelligent deduplication
+  const finalExpertise = mergeExpertise(
+    expertiseArray,
+    certificationExpertise,
+    inferredExpertise,
+    specializedKeywords
+  );
 
   return {
     personalInfo: {
@@ -340,17 +400,7 @@ function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: 
       summary: data.summary || "",
       photoUrl: extractedImage || undefined,
     },
-    experiences: experience.map((exp: Record<string, unknown>) => ({
-      companyName: exp.company || "",
-      position: exp.position || "",
-      startDate: exp.startDate || "",
-      endDate: exp.endDate || "",
-      isCurrent:
-        !exp.endDate || (exp.endDate as string)?.trim() === "" || false,
-      description: ((exp.description as string) || "")
-        .split("\n")
-        .filter((line: string) => line.trim().length > 0),
-    })),
+    experiences: transformedExperiences,
     education: education.map((edu: Record<string, unknown>) => ({
       institutionName: edu.school || "",
       degree: edu.degree || "",
@@ -360,10 +410,7 @@ function transformClaudeResponseToTCVContent(rawData: unknown, extractedImage?: 
       isCurrent: false,
     })),
     skills: skillsArray,
-    expertise: [
-      ...expertiseArray,
-      ...certificationsArray.map((cert: Record<string, unknown>) => cert.name as string).filter((name) => name && name.length > 0),
-    ].filter((item, index, arr) => item && arr.indexOf(item) === index), // Deduplicate
+    expertise: finalExpertise,
     languages: languagesArray.map((lang: string) => ({
       name: lang,
       proficiency: "Fluent", // Default proficiency if not specified

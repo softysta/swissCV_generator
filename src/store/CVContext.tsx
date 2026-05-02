@@ -1,6 +1,7 @@
 "use client";
 
 import { TCVContent, TTemplateId } from "@/types/cvContent.tye";
+import { TLanguageCode } from "@/lib/languageLocalization";
 import {
   createContext,
   useContext,
@@ -13,8 +14,10 @@ import {
 type CVContextType = {
   cvData: TCVContent | null;
   selectedTemplate: TTemplateId;
+  cvLanguage: TLanguageCode;
   setCVData: (data: TCVContent) => void;
   setSelectedTemplate: (id: TTemplateId) => void;
+  setCVLanguage: (language: TLanguageCode) => void;
 };
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -26,6 +29,7 @@ const CVContext = createContext<CVContextType | null>(null);
 export function CVProvider({ children }: { children: ReactNode }) {
   const [cvData, setCVData] = useState<TCVContent | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<TTemplateId>("classic");
+  const [cvLanguage, setCVLanguage] = useState<TLanguageCode>("en");
 
   return (
     <CVContext.Provider
@@ -34,6 +38,8 @@ export function CVProvider({ children }: { children: ReactNode }) {
         setCVData,
         selectedTemplate,
         setSelectedTemplate,
+        cvLanguage,
+        setCVLanguage,
       }}
     >
       {children}

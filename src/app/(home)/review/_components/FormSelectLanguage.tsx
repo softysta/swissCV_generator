@@ -5,36 +5,39 @@ import { Input } from "@/components/ui/input";
 import { Plus, X } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { useState } from "react";
-
-interface Language {
-  name: string;
-  proficiency: "Native" | "Fluent" | "Intermediate" | "Basic";
-}
+import { useCVContext } from "@/store/CVContext";
+import {
+  getLocalizedProficiency,
+  getAllProficienciesInLanguage,
+} from "@/lib/languageLocalization";
 
 interface FormSelectLanguageProps {
   name: string;
   label?: string;
 }
 
-const proficiencyLevels = ["Native", "Fluent", "Intermediate", "Basic"] as const;
-
 export function FormSelectLanguage({
   name,
   label,
 }: FormSelectLanguageProps) {
   const { control } = useFormContext();
+  const { cvLanguage } = useCVContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: name as any,
   });
   const [newLanguage, setNewLanguage] = useState("");
-  const [selectedProficiency, setSelectedProficiency] = useState<"Native" | "Fluent" | "Intermediate" | "Basic">("Fluent");
+  
+  // Get localized proficiency levels
+  const proficiencyLevels = getAllProficienciesInLanguage(cvLanguage);
+  const defaultProficiency = getLocalizedProficiency("Fluent", cvLanguage);
+  const [selectedProficiency, setSelectedProficiency] = useState<string>(defaultProficiency);
 
   const addLanguage = () => {
     if (newLanguage.trim()) {
       append({ name: newLanguage, proficiency: selectedProficiency });
       setNewLanguage("");
-      setSelectedProficiency("Fluent");
+      setSelectedProficiency(defaultProficiency);
     }
   };
 
@@ -88,11 +91,7 @@ export function FormSelectLanguage({
 
         <select
           value={selectedProficiency}
-          onChange={(e) =>
-            setSelectedProficiency(
-              e.target.value as "Native" | "Fluent" | "Intermediate" | "Basic"
-            )
-          }
+          onChange={(e) => setSelectedProficiency(e.target.value)}
           className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-sm"
         >
           {proficiencyLevels.map((level) => (

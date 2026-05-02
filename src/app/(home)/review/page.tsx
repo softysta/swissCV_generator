@@ -8,6 +8,10 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { useCVContext } from "@/store/CVContext";
 import { TCVContent } from "@/types/cvContent.tye";
+import {
+  detectCVLanguage,
+  convertProficiencyToLanguage,
+} from "@/lib/languageLocalization";
 import { FormInput } from "./_components/FormInput";
 import { FormTextarea } from "./_components/FormTextarea";
 import { FormImageUpload } from "./_components/FormImageUpload";
@@ -27,7 +31,7 @@ interface ReviewFormData {
   summary: string;
   languages: Array<{
     name: string;
-    proficiency: "Native" | "Fluent" | "Intermediate" | "Basic";
+    proficiency: string;
   }>;
   skills: string[];
   expertise: string[];
@@ -50,7 +54,7 @@ interface ReviewFormData {
 }
 
 export default function ReviewPage() {
-  const { cvData, setCVData } = useCVContext();
+  const { cvData, setCVData, cvLanguage, setCVLanguage } = useCVContext();
   const router = useRouter();
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitializedRef = useRef(false);
@@ -124,6 +128,10 @@ export default function ReviewPage() {
   useEffect(() => {
     if (!cvData) return;
 
+    // Detect CV language from content
+    const detectedLanguage = detectCVLanguage(cvData);
+    setCVLanguage(detectedLanguage);
+
     const formValues: ReviewFormData = {
       profileImage: cvData.personalInfo?.photoUrl ?? null,
       fullName: cvData.personalInfo?.fullName ?? "",
@@ -135,7 +143,7 @@ export default function ReviewPage() {
       summary: cvData.personalInfo?.summary ?? "",
       languages: (cvData.languages ?? []).map((lang) => ({
         name: lang.name,
-        proficiency: (lang.proficiency as "Native" | "Fluent" | "Intermediate" | "Basic") || "Fluent",
+        proficiency: convertProficiencyToLanguage(lang.proficiency || "Fluent", detectedLanguage),
       })),
       skills: cvData.skills ?? [],
       expertise: cvData.expertise ?? [],
@@ -159,7 +167,7 @@ export default function ReviewPage() {
 
     reset(formValues);
     hasInitializedRef.current = true;
-  }, [cvData, reset]);
+  }, [cvData, reset, setCVLanguage]);
 
   // Debounced sync - sync to context only after 500ms of inactivity
   useEffect(() => {
