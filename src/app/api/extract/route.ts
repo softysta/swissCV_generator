@@ -6,7 +6,6 @@ import {
   mergeExpertise,
 } from "@/lib/expertiseExtraction";
 import {
-  detectCVLanguage,
   type TLanguageCode,
 } from "@/lib/languageLocalization";
 
@@ -82,9 +81,9 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      // Detect CV language from raw data
-      const detectedLanguage = detectCVLanguage(rawData as any);
-      console.log("Detected CV language:", detectedLanguage);
+      // Detect CV language from raw Claude data
+      const detectedLanguage = detectLanguageFromClaudeData(rawData as any);
+      console.log("🌍 Detected CV language:", detectedLanguage);
       
       extractedData = transformClaudeResponseToTCVContent(
         rawData,
@@ -375,10 +374,19 @@ function transformClaudeResponseToTCVContent(
     .filter((name) => name && name.length > 0);
 
   // Extract expertise from job descriptions in detected language
+  // Use raw experience data to ensure description field matches what patterns expect
+  const experiencesForExpertiseExtraction = experience.map((exp: Record<string, unknown>) => ({
+    position: (exp.position as string) || "",
+    description: ((exp.description as string) || "").split("\n").filter((line: string) => line.trim().length > 0),
+    company: (exp.company as string) || "",
+  }));
+
   const inferredExpertise = extractExpertiseFromExperiences(
-    experience,
+    experiencesForExpertiseExtraction,
     language
   );
+  console.log("🎯 Calling extractExpertiseFromExperiences with language:", language);
+  console.log("🎯 Inferred expertise:", inferredExpertise);
   const specializedKeywords = extractSpecializedKeywords(experience);
 
   // Merge all expertise sources with intelligent deduplication
@@ -388,6 +396,9 @@ function transformClaudeResponseToTCVContent(
     inferredExpertise,
     specializedKeywords
   );
+
+  console.log("🌍 CV Language:", language);
+  console.log("📊 Expertise extracted in", language, ":", finalExpertise);
 
   return {
     personalInfo: {
@@ -417,4 +428,83 @@ function transformClaudeResponseToTCVContent(
     })),
     interests: interestsArray,
   };
+}
+
+/**
+ * Detect language from Claude's raw extraction data format
+ * Works with the structure Claude returns, not the transformed TCVContent
+ */
+function detectLanguageFromClaudeData(rawData: Record<string, unknown>): TLanguageCode {
+  const personalInfo = rawData.personalInfo as Record<string, unknown> || {};
+  const experience = (rawData.experience as Array<Record<string, unknown>>) || [];
+  
+  // Collect all text content
+  const textContent = [
+    personalInfo?.name || "",
+    personalInfo?.jobTitle || "",
+    rawData.summary || "",
+    experience
+      .map((exp) => [exp.position || "", exp.description || ""].join(" "))
+      .join(" "),
+  ].join(" ");
+
+  const detectedLanguage = detectLanguageFromText(textContent);
+  console.log("📝 Text for language detection (first 200 chars):", textContent.substring(0, 200));
+  console.log("🌍 Detected language:", detectedLanguage);
+  return detectedLanguage;
+}
+
+/**
+ * Detect language from raw text using keyword matching
+ * Returns language code or defaults to "en"
+ */
+function detectLanguageFromText(text: string): TLanguageCode {
+  if (!text || text.trim().length === 0) {
+    console.log("⚠️ No text to analyze for language detection, defaulting to English");
+    return "en";
+  }
+
+  const lowercaseText = text.toLowerCase();
+  console.log("🔍 Analyzing text length:", lowercaseText.length, "characters");
+
+  // French indicators - common French words and domain-specific terms
+  const frenchPatterns = /\b(le|la|de|des|et|est|pour|plus|ans|expérience|expertise|compétences|langues|gestion|équipe|projet|responsable|directeur|analyste|ingénieur|développeur|consultant|manager|coordinateur|spécialiste|professionnel)\b/gi;
+  const frenchMatches = (lowercaseText.match(frenchPatterns) || []).length;
+
+  // German indicators
+  const germanPatterns = /\b(der|die|das|ein|und|zu|mit|für|jahren|erfahrung|fähigkeiten|management|team|projekt|leiter|manager|direktor|ingenieur|entwickler|berater|spezialist|fachmann)\b/gi;
+  const germanMatches = (lowercaseText.match(germanPatterns) || []).length;
+
+  // Italian indicators
+  const italianPatterns = /\b(il|la|di|da|e|per|anni|esperienza|competenze|lingue|gestione|team|progetto|direttore|responsabile|ingegnere|analista|consulente|specialista|manager|coordinatore)\b/gi;
+  const italianMatches = (lowercaseText.match(italianPatterns) || []).length;
+
+  // Spanish indicators
+  const spanishPatterns = /\b(el|la|de|y|para|años|experiencia|competencias|idiomas|gestión|equipo|proyecto|director|responsable|ingeniero|analista|consultor|especialista|gerente|coordinador)\b/gi;
+  const spanishMatches = (lowercaseText.match(spanishPatterns) || []).length;
+
+  // Portuguese indicators
+  const portuguesePatterns = /\b(o|a|de|e|para|anos|experiência|competências|idiomas|gestão|equipe|projeto|diretor|responsável|engenheiro|analista|consultor|especialista|gerente|coordenador)\b/gi;
+  const portugueseMatches = (lowercaseText.match(portuguesePatterns) || []).length;
+
+  const scores: Record<TLanguageCode, number> = {
+    en: 0,
+    fr: frenchMatches,
+    de: germanMatches,
+    it: italianMatches,
+    es: spanishMatches,
+    pt: portugueseMatches,
+  };
+
+  console.log("📊 Language scores:", scores);
+
+  // Find language with highest score
+  const sorted = Object.entries(scores).sort(([, a], [, b]) => b - a);
+  const detected = sorted[0][0] as TLanguageCode;
+  const score = sorted[0][1];
+
+  console.log("🏆 Highest score:", detected, "with", score, "matches");
+
+  // Default to English only if no matches or very low score
+  return score > 0 ? detected : "en";
 }
