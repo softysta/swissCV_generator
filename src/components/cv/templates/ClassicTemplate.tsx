@@ -20,7 +20,7 @@ const montserrat = Montserrat({
 });
 const openSans = Open_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "800"],
 });
 
 export default function ClassicTemplate({ data }: TCVTemplateProps) {
@@ -229,7 +229,7 @@ export default function ClassicTemplate({ data }: TCVTemplateProps) {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <h3 style={expPosStyle}>{exp.position}</h3>
+                  <h3 style={expPosStyle} className="font-black">{exp.position}</h3>
                   <span style={expDateStyle}>
                     {exp.startDate}-{exp.endDate}
                   </span>
@@ -311,7 +311,6 @@ const summaryStyle: React.CSSProperties = {
 
 const expPosStyle: React.CSSProperties = {
   fontSize: 13,
-  fontWeight: "bold",
   margin: 0,
   textTransform: "uppercase",
 };
@@ -330,13 +329,11 @@ const expCompanyStyle: React.CSSProperties = {
 const expDescStyle: React.CSSProperties = {
   fontSize: 11,
   lineHeight: 1.5,
-  fontWeight: "bold",
 };
 
 const expertiseStyle: React.CSSProperties = {
   fontSize: 12,
   margin: "4px 0",
-  fontWeight: "bold",
 };
 
 const eduTitleStyle: React.CSSProperties = {
