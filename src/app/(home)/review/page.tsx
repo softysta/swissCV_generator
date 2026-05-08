@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFormState } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
@@ -58,10 +58,12 @@ export default function ReviewPage() {
   const router = useRouter();
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitializedRef = useRef(false);
+  const isEditingRef = useRef(false);
 
   // Initialize form with static defaults first
   const methods = useForm<ReviewFormData>({
     mode: "onChange",
+    shouldFocusError: false,
     defaultValues: {
       profileImage: null,
       fullName: "",
@@ -80,11 +82,18 @@ export default function ReviewPage() {
     },
   });
 
-  const { watch, reset } = methods;
-  const formData = watch();
+  const { watch, reset, getValues, formState } = methods;
+  const { isDirty } = formState;
+
+  // Only watch for dirty state changes, not every keystroke
+  const watchDirty = watch();
+  
+  // Only get values when we need to sync (using isDirty flag)
+  // This prevents unnecessary re-renders from watch()
 
   // Transform and navigate to generate page
   const handleProceedToGenerate = () => {
+    const formData = getValues();
     const tcvContent: TCVContent = {
       personalInfo: {
         fullName: formData.fullName || "",
@@ -171,9 +180,12 @@ export default function ReviewPage() {
 
   // Debounced sync - sync to context only after 500ms of inactivity
   useEffect(() => {
-    if (!hasInitializedRef.current) {
+    if (!hasInitializedRef.current || !isDirty) {
       return;
     }
+
+    // Mark that we're editing
+    isEditingRef.current = true;
 
     // Clear previous timeout
     if (syncTimeoutRef.current) {
@@ -182,6 +194,7 @@ export default function ReviewPage() {
 
     // Set new timeout for syncing
     syncTimeoutRef.current = setTimeout(() => {
+      const formData = getValues();
       if (formData) {
         const tcvContent: TCVContent = {
           personalInfo: {
@@ -218,6 +231,8 @@ export default function ReviewPage() {
           interests: formData.interests,
         };
         setCVData(tcvContent);
+        // Stop edit mode after sync
+        isEditingRef.current = false;
       }
     }, 500);
 
@@ -226,7 +241,7 @@ export default function ReviewPage() {
         clearTimeout(syncTimeoutRef.current);
       }
     };
-  }, [formData, setCVData]);
+  }, [isDirty, getValues, setCVData]);
 
   return (
     <main className="min-h-screen bg-linear-to-b from-zinc-50 to-zinc-100 py-8 px-4">

@@ -20,7 +20,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
 
   return (
     <div
-      className="flex w-[794px] min-h-[1123px] bg-[#0f1e5c] font-sans"
+      className="flex w-198.5 min-h-280.75 bg-[#0f1e5c] font-sans"
       style={{
         fontFamily: "Open Sans, sans-serif",
         backgroundColor: "#0f1e5c",
@@ -28,11 +28,11 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
     >
       {/* ── SIDEBAR ── full navy top-to-bottom */}
       <aside
-        className="w-[280px] flex flex-col shrink-0"
+        className="w-70 flex flex-col shrink-0"
         style={{ color: "#ffffff" }}
       >
         {/* Profile photo box */}
-        <div className="w-full h-[280px] px-[28px] py-[24px] mt-[3px] box-border">
+        <div className="w-full h-70 px-7 py-6 mt-0.75 box-border">
           <div className="w-full h-full border-8 border-white overflow-hidden">
             {personalInfo.photoUrl ? (
               <div
@@ -55,34 +55,34 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
           </div>
         </div>
 
-        <div className="pl-[45px] mt-2">
-          <div className="mb-[25px]">
+        <div className="pl-11.25 mt-2">
+          <div className="mb-6.25">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
               style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               INFORMATIONS
             </h2>
-            <p className="text-[11.5px] my-[6px] opacity-90">Permis B</p>
-            <p className="text-[11.5px] my-[6px] opacity-90">
+            <p className="text-[11.5px] my-1.5 opacity-90">Permis B</p>
+            <p className="text-[11.5px] my-1.5 opacity-90">
               {personalInfo.phoneNumber}
             </p>
-            <p className="text-[11.5px] my-[6px] opacity-90">
+            <p className="text-[11.5px] my-1.5 opacity-90">
               {personalInfo.email}
             </p>
-            <p className="text-[11.5px] my-[6px] opacity-90">
+            <p className="text-[11.5px] my-1.5 opacity-90">
               {personalInfo.address}
             </p>
           </div>
         </div>
 
         <div
-          className="w-full h-[2px] mb-6"
+          className="w-full h-0.5 mb-6"
           style={{ backgroundColor: "#ffffff" }}
         ></div>
 
         {skills.length > 0 && (
-          <div className="mb-[25px] pl-[45px]">
+          <div className="mb-6.25 pl-11.25">
             <h2
               className="text-[18px] font-bold tracking-[2px] uppercase mb-6"
               style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -141,7 +141,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
       </aside>
 
       {/* ── MAIN CONTENT ── white background */}
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
         {/* Name + Title + Summary */}
         <header
           className="px-[26px] pb-[36px] pt-[20px] mt-4 mr-3"
@@ -178,7 +178,7 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         {/* EXPÉRIENCES PROFESSIONNELLES */}
         {experiences.length > 0 && (
           <section
-            className="px-[26px] py-[16px] mr-3"
+            className="px-[26px] pt-[6px] pb-[12px] mr-3"
             style={{ backgroundColor: "#ffffff" }}
           >
             {experiences.map((exp, i) => (
@@ -229,18 +229,18 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
         {/* FORMATIONS */}
         {education.length > 0 && (
           <section
-            className="px-[16px] py-[2px] mr-3"
+            className="px-[26px] pt-[6px] pb-[12px] mr-3 flex-1 flex flex-col"
             style={{ backgroundColor: "#ffffff" }}
           >
             {education.map((edu, i) => (
-              <div key={i} className="mb-[10px] mt-[24px]">
-                <div className="flex items-center">
+              <div key={i} className="mb-[12px]">
+                <div className="flex items-center mb-[4px] gap-3">
                   <div
                     className="size-4 mt-6 rounded-full"
                     style={{ backgroundColor: "#172554" }}
                   ></div>
                   <h3
-                    className="text-[14px] font-bold ml-2"
+                    className="text-[15px] font-bold m-0"
                     style={{
                       fontFamily: "Montserrat, sans-serif",
                       color: "#000000",
@@ -249,10 +249,10 @@ export default function ModernTemplate({ data }: TCVTemplateProps) {
                     {edu.degree}
                   </h3>
                 </div>
-                <p className="text-[11px] font-bold  pl-[24px] mb-[6px] mt-0">
-                  {edu.startDate} - {edu.endDate}
+                <p className="text-xs font-semibold px-[30px]" style={{ color: "#4b5563" }}>
+                  {edu.startDate}{edu.endDate ? ` - ${edu.endDate}` : ""}
                 </p>
-                <p className="text-[11px] leading-[1.5] font-semibold pl-[22px] mb-[3px] mt-0">
+                <p className="text-[11px] leading-[1.5] font-semibold pl-[30px] mb-[3px] mt-1">
                   {edu.institutionName} -{" "}
                   {personalInfo.address?.split(",").pop()?.trim() || "Any City"}
                 </p>
